@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/sun-fight/zinx-sun/znet"
+	"github.com/sun-fight/zinx-websocket/znet"
 	"io"
 	"log"
 	"net/url"
@@ -37,6 +37,7 @@ func main() {
 	go func() {
 		defer close(done)
 		for {
+			//------重点看这  接收服务器消息
 			msgType, ioReader, err := c.NextReader()
 			if err != nil {
 				fmt.Println("get read reader error ", err)
@@ -79,6 +80,7 @@ func main() {
 		case <-done:
 			return
 		case t := <-ticker.C:
+			//------重点看这  每秒向服务器发送消息
 			msgPackage := znet.NewBinaryMsgPackage(1, []byte(t.String()))
 			pack, err := znet.NewDataPack().Pack(msgPackage)
 			if err != nil {

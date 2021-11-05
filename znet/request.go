@@ -1,6 +1,6 @@
 package znet
 
-import "github.com/sun-fight/zinx-sun/ziface"
+import "github.com/sun-fight/zinx-websocket/ziface"
 
 //Request 请求
 type Request struct {

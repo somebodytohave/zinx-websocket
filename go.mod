@@ -1,4 +1,4 @@
-module github.com/sun-fight/zinx-sun
+module github.com/sun-fight/zinx-websocket
 
 go 1.17
 

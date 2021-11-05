@@ -1,9 +1,9 @@
 package api
 
 import (
-	"github.com/sun-fight/zinx-sun/ziface"
-	"github.com/sun-fight/zinx-sun/zlog"
-	"github.com/sun-fight/zinx-sun/znet"
+	"github.com/sun-fight/zinx-websocket/ziface"
+	"github.com/sun-fight/zinx-websocket/zlog"
+	"github.com/sun-fight/zinx-websocket/znet"
 )
 
 //ping test 自定义路由

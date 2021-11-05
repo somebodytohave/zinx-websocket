@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/sun-fight/zinx-sun/utils"
-	"github.com/sun-fight/zinx-sun/ziface"
+	"github.com/sun-fight/zinx-websocket/utils"
+	"github.com/sun-fight/zinx-websocket/ziface"
 )
 
 // MsgHandle -

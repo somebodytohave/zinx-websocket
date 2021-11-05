@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sun-fight/zinx-sun/zlog"
+	"github.com/sun-fight/zinx-websocket/zlog"
 )
 
 //触发函数

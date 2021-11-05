@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/sun-fight/zinx-sun/examples/ping/server/api"
-	"github.com/sun-fight/zinx-sun/utils"
-	"github.com/sun-fight/zinx-sun/znet"
+	"github.com/sun-fight/zinx-websocket/examples/ping/server/api"
+	"github.com/sun-fight/zinx-websocket/utils"
+	"github.com/sun-fight/zinx-websocket/znet"
 )
 
 func main() {

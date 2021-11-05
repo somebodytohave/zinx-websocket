@@ -15,8 +15,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/sun-fight/zinx-sun/ziface"
-	"github.com/sun-fight/zinx-sun/zlog"
+	"github.com/sun-fight/zinx-websocket/ziface"
+	"github.com/sun-fight/zinx-websocket/zlog"
 )
 
 /*

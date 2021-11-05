@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sun-fight/zinx-sun/zlog"
+	"github.com/sun-fight/zinx-websocket/zlog"
 )
 
 const (

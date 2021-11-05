@@ -1,27 +1,25 @@
-# 基于Zinx框架二次开发(websocket版)
+# 基于zinx框架二次开发(websocket版)
 
 - tcp协议改为websocket
 - 新增心跳检测功能
 
-# Zinx简介
+[zinx(TCP版本)](https://github.com/aceld/zinx)
 
-[Zinx 是一个基于Golang的轻量级并发服务器框架](https://github.com/aceld/zinx)
+[看云-《zinx框架教程-基于Golang的轻量级并发服务器》](https://www.kancloud.cn/aceld/zinx)
 
-[看云-《Zinx框架教程-基于Golang的轻量级并发服务器》](https://www.kancloud.cn/aceld/zinx)
-
-[简书-《Zinx框架教程-基于Golang的轻量级并发服务器》](https://www.jianshu.com/p/23d07c0a28e5)
+[简书-《zinx框架教程-基于Golang的轻量级并发服务器》](https://www.jianshu.com/p/23d07c0a28e5)
 
 ## 案例demo
 
-### [Ping-简单的服务器与客户端的交互](https://github.com/sun-fight/zinx-sun/tree/master/examples/ping)
+### [ping-服务器与客户端的简单通信demo](https://github.com/sun-fight/zinx-websocket/tree/master/examples/ping)
 
 ### 一、快速上手
 
-[代码来自examples->ping](https://github.com/sun-fight/zinx-sun/tree/master/examples/ping)
+[代码来自examples->ping](https://github.com/sun-fight/zinx-websocket/tree/master/examples/ping)
 
 ### server端
 
-基于Zinx框架开发的服务器应用，主函数步骤比较精简，最多只需要3步即可。
+基于zinx框架开发的服务器应用，主函数步骤比较精简，最多只需要3步即可。
 
 ```go
 func main() {
@@ -40,20 +38,20 @@ router.Run(bindAddress)
 ```
 
 其中(api.PingRouter)自定义路由及业务处理：
-[代码跳转](https://github.com/sun-fight/zinx-sun/blob/master/examples/ping/server/api/ping.go)
+[代码跳转](https://github.com/sun-fight/zinx-websocket/blob/master/examples/ping/server/api/ping.go)
 
 ### client端
 
 zinx的消息处理采用，`[MsgLength]|[MsgID]|[Data]`的封包格式
-[代码跳转](https://github.com/sun-fight/zinx-sun/blob/master/examples/ping/client/main.go)
+[代码跳转](https://github.com/sun-fight/zinx-websocket/blob/master/examples/ping/client/main.go)
 
-### Zinx配置文件
+### zinx配置文件
 
-[详细配置文件说明与默认值](https://github.com/sun-fight/zinx-sun/blob/master/utils/globalobj.go)
+[详细配置文件说明与默认值](https://github.com/sun-fight/zinx-websocket/blob/master/utils/globalobj.go)
 
 ```json
 {
-  "Name": "zinx-sun Demo",
+  "Name": "zinx-websocket Demo",
   "Host": "127.0.0.1",
   "TcpPort": 8999,
   "MaxConn": 3,
@@ -70,7 +68,7 @@ zinx的消息处理采用，`[MsgLength]|[MsgID]|[Data]`的封包格式
   func NewServer () ziface.IServer 
 ```
 
-创建一个Zinx服务器句柄，该句柄作为当前服务器应用程序的主枢纽，包括如下功能：
+创建一个zinx服务器句柄，该句柄作为当前服务器应用程序的主枢纽，包括如下功能：
 
 #### 1)开启服务
 

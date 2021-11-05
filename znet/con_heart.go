@@ -2,7 +2,7 @@ package znet
 
 import (
 	"fmt"
-	"github.com/sun-fight/zinx-sun/utils"
+	"github.com/sun-fight/zinx-websocket/utils"
 	"time"
 )
 
