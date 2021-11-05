@@ -8,11 +8,14 @@ import (
 
 //定时检测心跳包
 func (c *Connection) heartBeatChecker() {
+	if utils.GlobalObject.HeartbeatTime == 0 {
+		return
+	}
 	var (
 		timer *time.Timer
 	)
 
-	timer = time.NewTimer(time.Duration(utils.GlobalObject.HeartbeatTime) * time.Second)
+	timer = time.NewTimer((utils.GlobalObject.HeartbeatTime) * time.Second)
 
 	for {
 		select {

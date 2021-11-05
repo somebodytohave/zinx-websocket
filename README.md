@@ -12,12 +12,15 @@
 [简书-《Zinx框架教程-基于Golang的轻量级并发服务器》](https://www.jianshu.com/p/23d07c0a28e5)
 
 ## 案例demo
+
 ### [Ping-简单的服务器与客户端的交互](https://github.com/sun-fight/zinx-sun/tree/master/examples/ping)
 
 ### 一、快速上手
 
 [代码来自examples->ping](https://github.com/sun-fight/zinx-sun/tree/master/examples/ping)
+
 ### server端
+
 基于Zinx框架开发的服务器应用，主函数步骤比较精简，最多只需要3步即可。
 
 ```go
@@ -39,7 +42,6 @@ router.Run(bindAddress)
 其中(api.PingRouter)自定义路由及业务处理：
 [代码跳转](https://github.com/sun-fight/zinx-sun/blob/master/examples/ping/server/api/ping.go)
 
-
 ### client端
 
 zinx的消息处理采用，`[MsgLength]|[MsgID]|[Data]`的封包格式
@@ -47,34 +49,20 @@ zinx的消息处理采用，`[MsgLength]|[MsgID]|[Data]`的封包格式
 
 ### Zinx配置文件
 
+[详细配置文件说明与默认值](https://github.com/sun-fight/zinx-sun/blob/master/utils/globalobj.go)
+
 ```json
 {
-  "Name": "zinx-sun ping Demo",
+  "Name": "zinx-sun Demo",
   "Host": "127.0.0.1",
   "TcpPort": 8999,
   "MaxConn": 3,
   "WorkerPoolSize": 10,
   "LogDir": "./mylog",
   "LogFile": "zinx.log",
-  "HeartbeatTime": 30
+  "HeartbeatTime": 60
 }
 ```
-
-`Name`:服务器应用名称
-
-`Host`:服务器IP
-
-`TcpPort`:服务器监听端口
-
-`MaxConn`:允许的客户端链接最大数量
-
-`WorkerPoolSize`:工作任务池最大工作Goroutine数量
-
-`LogDir`: 日志文件夹
-
-`LogFile`: 日志文件名称(如果不提供，则日志信息打印到Stderr)
-
-`HeartbeatTime`: 心跳检测时间默认30秒
 
 ### I.服务器模块Server
 

@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"time"
 
 	"github.com/sun-fight/zinx-sun/ziface"
 	"github.com/sun-fight/zinx-sun/zlog"
@@ -34,12 +35,15 @@ type GlobalObj struct {
 	/*
 		Zinx
 	*/
-	Version          string //当前Zinx版本号
-	MaxPacketSize    uint32 //都需数据包的最大值
-	MaxConn          int    //当前服务器主机允许的最大链接个数
-	WorkerPoolSize   uint32 //业务工作Worker池的数量
-	MaxWorkerTaskLen uint32 //业务工作Worker对应负责的任务队列最大任务存储数量
-	MaxMsgChanLen    uint32 //SendBuffMsg发送消息的缓冲最大长度
+	Version          string        //当前Zinx版本号
+	MaxPacketSize    uint32        //读取数据包的最大值
+	MaxConn          int           //当前服务器主机允许的最大链接个数
+	WorkerPoolSize   uint32        //业务工作Worker池的数量
+	MaxWorkerTaskLen uint32        //业务工作Worker对应负责的任务队列最大任务存储数量
+	MaxMsgChanLen    uint32        //SendBuffMsg发送消息的缓冲最大长度
+	HeartbeatTime    time.Duration //心跳间隔默认60秒,0=永不超时
+	ConnReadTimeout  time.Duration //连接读取超时时间，0=永不超时,websocket连接状态已损坏且以后的所有读取都将返回错误。
+	ConnWriteTimeout time.Duration //连接读取超时时间，0=永不超时,websocket连接状态已损坏且以后的所有读取都将返回错误。
 
 	/*
 		config file path
@@ -52,7 +56,6 @@ type GlobalObj struct {
 	LogDir        string //日志所在文件夹 默认"./log"
 	LogFile       string //日志文件名称   默认""  --如果没有设置日志文件，打印信息将打印至stderr
 	LogDebugClose bool   //是否关闭Debug日志级别调试信息 默认false  -- 默认打开debug信息
-	HeartbeatTime int64  //心跳间隔 默认 30秒
 }
 
 /*
@@ -122,7 +125,9 @@ func init() {
 		LogDir:           pwd + "/log",
 		LogFile:          "",
 		LogDebugClose:    false,
-		HeartbeatTime:    30,
+		HeartbeatTime:    60,
+		ConnReadTimeout:  60,
+		ConnWriteTimeout: 60,
 	}
 
 	//NOTE: 从配置文件中加载一些用户配置的参数

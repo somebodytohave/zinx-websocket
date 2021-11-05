@@ -70,6 +70,8 @@ func (c *Connection) StartWriter() {
 	for {
 		select {
 		case msg := <-c.msgChan:
+			//读取超时
+			c.Conn.SetWriteDeadline(time.Now().Add(utils.GlobalObject.ConnWriteTimeout * time.Second))
 			//有数据要写给客户端
 			if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 				fmt.Println("Send Data error:, ", err, " Conn Writer exit")
@@ -79,6 +81,7 @@ func (c *Connection) StartWriter() {
 			//fmt.Printf("Send data succ! data = %+v\n", data)
 		case msg, ok := <-c.msgBuffChan:
 			if ok {
+				c.Conn.SetWriteDeadline(time.Now().Add(utils.GlobalObject.ConnWriteTimeout * time.Second))
 				//有数据要写给客户端
 				if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 					fmt.Println("Send Data error:, ", err, " Conn Writer exit")
@@ -107,6 +110,8 @@ func (c *Connection) StartReader() {
 		case <-c.ctx.Done():
 			return
 		default:
+			//超时时间
+			c.Conn.SetReadDeadline(time.Now().Add(utils.GlobalObject.ConnReadTimeout * time.Second))
 			msgType, ioReader, err := c.Conn.NextReader()
 			if err != nil {
 				fmt.Println("get read reader error ", err)
@@ -155,6 +160,8 @@ func (c *Connection) StartReader() {
 //Start 启动连接，让当前连接开始工作
 func (c *Connection) Start() {
 	c.ctx, c.cancel = context.WithCancel(context.Background())
+	//设置消息最大size
+	c.Conn.SetReadLimit(int64(utils.GlobalObject.MaxPacketSize))
 	//1 开启用户从客户端读取数据流程的Goroutine
 	go c.StartReader()
 	//2 开启用于写回客户端数据流程的Goroutine
@@ -163,6 +170,7 @@ func (c *Connection) Start() {
 	c.TCPServer.CallOnConnStart(c)
 	//开启心跳检测
 	go c.heartBeatChecker()
+
 }
 
 //Stop 停止连接，结束当前连接状态M
