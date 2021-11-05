@@ -3,22 +3,20 @@
 - tcp协议改为websocket
 - 新增心跳检测功能
 
-# Zinx
+# Zinx简介
 
 [Zinx 是一个基于Golang的轻量级并发服务器框架](https://github.com/aceld/zinx)
-
-## Zinx详细教程及文档
 
 [看云-《Zinx框架教程-基于Golang的轻量级并发服务器》](https://www.kancloud.cn/aceld/zinx)
 
 [简书-《Zinx框架教程-基于Golang的轻量级并发服务器》](https://www.jianshu.com/p/23d07c0a28e5)
 
 ## 案例demo
-### [Ping-简单的服务器与客户端的交互]()
+### [Ping-简单的服务器与客户端的交互](https://github.com/sun-fight/zinx-sun/tree/master/examples/ping)
 
 ### 一、快速上手
 
-[代码来自examples->ping]()
+[代码来自examples->ping](https://github.com/sun-fight/zinx-sun/tree/master/examples/ping)
 ### server端
 基于Zinx框架开发的服务器应用，主函数步骤比较精简，最多只需要3步即可。
 
