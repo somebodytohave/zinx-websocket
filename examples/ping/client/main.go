@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/aceld/zinx/znet"
+	"github.com/sun-fight/zinx-sun/znet"
 	"io"
 	"log"
 	"net/url"
@@ -14,7 +14,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var addr = flag.String("addr", "localhost:8080", "http service address")
+var addr = flag.String("addr", "localhost:8999", "http service address")
 
 func main() {
 	flag.Parse()
@@ -37,12 +37,6 @@ func main() {
 	go func() {
 		defer close(done)
 		for {
-			//_, message, err := c.ReadMessage()
-			//if err != nil {
-			//	log.Println("read:", err)
-			//	return
-			//}
-			//log.Printf("recv: %s", message)
 			msgType, ioReader, err := c.NextReader()
 			if err != nil {
 				fmt.Println("get read reader error ", err)

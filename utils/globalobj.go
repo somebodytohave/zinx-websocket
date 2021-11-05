@@ -14,8 +14,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/aceld/zinx/ziface"
-	"github.com/aceld/zinx/zlog"
+	"github.com/sun-fight/zinx-sun/ziface"
+	"github.com/sun-fight/zinx-sun/zlog"
 )
 
 /*

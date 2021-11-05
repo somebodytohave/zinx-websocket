@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/aceld/zinx/utils"
-	"github.com/aceld/zinx/ziface"
+	"github.com/sun-fight/zinx-sun/utils"
+	"github.com/sun-fight/zinx-sun/ziface"
 )
 
 //Connection 链接

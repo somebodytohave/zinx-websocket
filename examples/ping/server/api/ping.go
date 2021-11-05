@@ -1,9 +1,9 @@
-package zrouter
+package api
 
 import (
-	"github.com/aceld/zinx/ziface"
-	"github.com/aceld/zinx/zlog"
-	"github.com/aceld/zinx/znet"
+	"github.com/sun-fight/zinx-sun/ziface"
+	"github.com/sun-fight/zinx-sun/zlog"
+	"github.com/sun-fight/zinx-sun/znet"
 )
 
 //ping test 自定义路由

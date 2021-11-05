@@ -8,8 +8,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/aceld/zinx/utils"
-	"github.com/aceld/zinx/ziface"
+	"github.com/sun-fight/zinx-sun/utils"
+	"github.com/sun-fight/zinx-sun/ziface"
 )
 
 var zinxLogo = `                                        

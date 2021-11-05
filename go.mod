@@ -1,6 +1,6 @@
-module github.com/aceld/zinx
+module github.com/sun-fight/zinx-sun
 
-go 1.13
+go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.7.4 // indirect
