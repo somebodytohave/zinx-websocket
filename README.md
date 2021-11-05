@@ -26,7 +26,7 @@ func main() {
 server := znet.NewServer()
 
 //2 配置路由
-server.AddRouter(0, &PingRouter{})
+server.AddRouter(1, &api.PingRouter{})
 
 //3 开启服务
 bindAddress := fmt.Sprintf("%s:%d", utils.GlobalObject.Host, utils.GlobalObject.TCPPort)
@@ -36,156 +36,14 @@ router.Run(bindAddress)
 }
 ```
 
-其中自定义路由及业务配置方式如下：
+其中(api.PingRouter)自定义路由及业务处理：
+[代码跳转](https://github.com/sun-fight/zinx-sun/blob/master/examples/ping/server/api/ping.go)
 
-```go
-package api
-
-import (
-	"github.com/sun-fight/zinx-sun/ziface"
-	"github.com/sun-fight/zinx-sun/zlog"
-	"github.com/sun-fight/zinx-sun/znet"
-)
-
-//ping test 自定义路由
-type PingRouter struct {
-	znet.BaseRouter
-}
-
-//Ping Handle
-func (this *PingRouter) Handle(request ziface.IRequest) {
-
-	zlog.Debug("Call PingRouter Handle")
-	//先读取客户端的数据，再回写ping...ping...ping
-	zlog.Debug("recv from client : msgId=", request.GetMsgID(), ", data=", string(request.GetData()))
-
-	err := request.GetConnection().SendBinaryBuffMsg(0, []byte("ping...ping...ping"))
-	if err != nil {
-		zlog.Error(err)
-	}
-}
-
-```
 
 ### client端
 
-zinx-sun的消息处理采用，`[MsgLength]|[MsgID]|[Data]`的封包格式
-[对比修改了拆包的逻辑](https://github.com/gorilla/websocket/blob/master/examples/echo/client.go)
-
-```go
-package main
-
-import (
-	"flag"
-	"fmt"
-	"github.com/sun-fight/zinx-sun/znet"
-	"io"
-	"log"
-	"net/url"
-	"os"
-	"os/signal"
-	"time"
-
-	"github.com/gorilla/websocket"
-)
-
-var addr = flag.String("addr", "localhost:8999", "http service address")
-
-func main() {
-	flag.Parse()
-	log.SetFlags(0)
-
-	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt)
-
-	u := url.URL{Scheme: "ws", Host: *addr, Path: "/"}
-	log.Printf("connecting to %s", u.String())
-
-	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
-	if err != nil {
-		log.Fatal("dial:", err)
-	}
-	defer c.Close()
-
-	done := make(chan struct{})
-
-	go func() {
-		defer close(done)
-		for {
-			//获取 io读取流
-			msgType, ioReader, err := c.NextReader()
-			if err != nil {
-				fmt.Println("get read reader error ", err)
-				return
-			}
-			//读取客户端的Msg head
-			dataPack := znet.NewDataPack()
-			headData := make([]byte, dataPack.GetHeadLen())
-			if _, err := io.ReadFull(ioReader, headData); err != nil {
-				fmt.Println("read msg head error ", err)
-				return
-			}
-			//拆包，得到msgID 和 datalen 放在msg中
-			msg, err := dataPack.Unpack(headData)
-			if err != nil {
-				fmt.Println("unpack error ", err)
-				return
-			}
-			msg.SetMsgType(msgType)
-
-			//根据 dataLen 读取 data，放在msg.Data中
-			var data []byte
-			if msg.GetDataLen() > 0 {
-				data = make([]byte, msg.GetDataLen())
-				if _, err := io.ReadFull(ioReader, data); err != nil {
-					fmt.Println("read msg data error ", err)
-					return
-				}
-			}
-			msg.SetData(data)
-			//打印数据
-			msg.ToString()
-		}
-	}()
-
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
-
-	for {
-		select {
-		case <-done:
-			return
-		case t := <-ticker.C:
-			msgPackage := znet.NewBinaryMsgPackage(1, []byte(t.String()))
-			pack, err := znet.NewDataPack().Pack(msgPackage)
-			if err != nil {
-				log.Println("write:", err)
-				return
-			}
-			err = c.WriteMessage(websocket.BinaryMessage, pack)
-			if err != nil {
-				log.Println("write:", err)
-				return
-			}
-		case <-interrupt:
-			log.Println("interrupt")
-
-			// Cleanly close the connection by sending a close message and then
-			// waiting (with timeout) for the server to close the connection.
-			err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
-			if err != nil {
-				log.Println("write close:", err)
-				return
-			}
-			select {
-			case <-done:
-			case <-time.After(time.Second):
-			}
-			return
-		}
-	}
-}
-```
+zinx的消息处理采用，`[MsgLength]|[MsgID]|[Data]`的封包格式
+[代码跳转](https://github.com/sun-fight/zinx-sun/blob/master/examples/ping/client/main.go)
 
 ### Zinx配置文件
 
