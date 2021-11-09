@@ -9,7 +9,7 @@ import (
 	"github.com/sun-fight/zinx-websocket/ziface"
 )
 
-var defaultHeaderLen uint32 = 8
+var defaultHeaderLen uint32 = 4
 
 //DataPack 封包拆包类实例，暂时不需要成员
 type DataPack struct{}

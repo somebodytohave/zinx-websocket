@@ -220,12 +220,12 @@ func (c *Connection) RemoteAddr() net.Addr {
 }
 
 //SendBinaryMsg 直接将Message数据发送数据给远程的TCP客户端
-func (c *Connection) SendBinaryMsg(msgID uint32, data []byte) (err error) {
+func (c *Connection) SendBinaryMsg(msgID uint16, data []byte) (err error) {
 	return c.SendMsg(msgID, websocket.BinaryMessage, data)
 }
 
 //SendMsg 直接将Message数据发送数据给远程的TCP客户端
-func (c *Connection) SendMsg(msgID uint32, msgType int, data []byte) (err error) {
+func (c *Connection) SendMsg(msgID uint16, msgType int, data []byte) (err error) {
 	c.RLock()
 	defer c.RUnlock()
 	if c.isClosed == true {
@@ -251,10 +251,10 @@ func (c *Connection) SendMsg(msgID uint32, msgType int, data []byte) (err error)
 }
 
 //SendBinaryBuffMsg  发生BuffMsg
-func (c *Connection) SendBinaryBuffMsg(msgID uint32, data []byte) (err error) {
+func (c *Connection) SendBinaryBuffMsg(msgID uint16, data []byte) (err error) {
 	return c.SendBuffMsg(msgID, websocket.BinaryMessage, data)
 }
-func (c *Connection) SendBuffMsg(msgID uint32, msgType int, data []byte) (err error) {
+func (c *Connection) SendBuffMsg(msgID uint16, msgType int, data []byte) (err error) {
 	c.RLock()
 	defer c.RUnlock()
 	if c.isClosed == true {

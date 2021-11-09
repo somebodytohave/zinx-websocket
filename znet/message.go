@@ -8,16 +8,16 @@ import (
 
 //Message 消息
 type Message struct {
-	DataLen uint32 //消息的长度
-	ID      uint32 //消息的ID 对应 AddRouter(1, &zrouter.PingRouter{})
+	DataLen uint16 //消息的长度
+	ID      uint16 //消息的ID 对应 AddRouter(1, &zrouter.PingRouter{})
 	Data    []byte //消息的内容
 	MsgType int    //消息类型websocket使用
 }
 
 //NewMsgPackage 创建一个Message消息包
-func NewMsgPackage(ID uint32, msgType int, data []byte) *Message {
+func NewMsgPackage(ID uint16, msgType int, data []byte) *Message {
 	return &Message{
-		DataLen: uint32(len(data)),
+		DataLen: uint16(len(data)),
 		ID:      ID,
 		Data:    data,
 		MsgType: msgType,
@@ -25,9 +25,9 @@ func NewMsgPackage(ID uint32, msgType int, data []byte) *Message {
 }
 
 //NewBinaryMsgPackage 创建一个Message消息包
-func NewBinaryMsgPackage(ID uint32, data []byte) *Message {
+func NewBinaryMsgPackage(ID uint16, data []byte) *Message {
 	return &Message{
-		DataLen: uint32(len(data)),
+		DataLen: uint16(len(data)),
 		ID:      ID,
 		Data:    data,
 		MsgType: websocket.BinaryMessage,
@@ -40,12 +40,12 @@ func (msg *Message) GetMsgType() int {
 }
 
 //GetDataLen 获取消息数据段长度
-func (msg *Message) GetDataLen() uint32 {
+func (msg *Message) GetDataLen() uint16 {
 	return msg.DataLen
 }
 
 //GetMsgID 获取消息ID
-func (msg *Message) GetMsgID() uint32 {
+func (msg *Message) GetMsgID() uint16 {
 	return msg.ID
 }
 
@@ -55,12 +55,12 @@ func (msg *Message) GetData() []byte {
 }
 
 //SetDataLen 设置消息数据段长度
-func (msg *Message) SetDataLen(len uint32) {
+func (msg *Message) SetDataLen(len uint16) {
 	msg.DataLen = len
 }
 
 //SetMsgID 设计消息ID
-func (msg *Message) SetMsgID(msgID uint32) {
+func (msg *Message) SetMsgID(msgID uint16) {
 	msg.ID = msgID
 }
 
