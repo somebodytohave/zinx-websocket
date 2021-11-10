@@ -91,7 +91,7 @@ zinx的消息处理采用，`[MsgLength]|[MsgID]|[Data]`的封包格式
 #### 4)注册路由
 
 ```go
-func (s *Server) AddRouter (msgId uint32, router ziface.IRouter) 
+func (s *Server) AddRouter (msgId uint16, router ziface.IRouter) 
 ```
 
 #### 5)注册链接创建Hook函数
