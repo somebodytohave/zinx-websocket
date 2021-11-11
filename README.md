@@ -1,5 +1,6 @@
 # 基于zinx框架二次开发(websocket版)
 
+- 用到mysql需要安装驱动`gorm.io/driver/mysql`
 - tcp协议改为websocket
 - 新增心跳检测功能
 

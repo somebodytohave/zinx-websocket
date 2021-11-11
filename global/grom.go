@@ -14,6 +14,8 @@ import (
 //	defer db.Close()
 //}
 
+//- 用到mysql需要安装驱动`gorm.io/driver/mysql`
+
 //只读数据库连接
 func InitGormReadMysql() *gorm.DB {
 	m := GlobalObject.MysqlReadConfig
