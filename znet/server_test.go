@@ -2,8 +2,8 @@ package znet
 
 import (
 	"fmt"
-	"github.com/sun-fight/zinx-websocket/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/sun-fight/zinx-websocket/global"
 	"io"
 	"net"
 	"testing"
@@ -156,7 +156,7 @@ func TestServer(t *testing.T) {
 	go ClientTest(2)
 
 	//2 开启服务
-	bindAddress := fmt.Sprintf("%s:%d", utils.GlobalObject.Host, utils.GlobalObject.TCPPort)
+	bindAddress := fmt.Sprintf("%s:%d", global.GlobalObject.Host, global.GlobalObject.TCPPort)
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.GET("/", s.Serve)

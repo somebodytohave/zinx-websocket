@@ -1,4 +1,4 @@
-package utils
+package global
 
 import (
 	"context"
@@ -18,6 +18,6 @@ func InitRedis() {
 		zlog.Fatal("redis connect ping failed, err:", err)
 	} else {
 		zlog.Info("redis connect ping response:", pong)
-		GlobalObject.Redis = client
+		Redis = client
 	}
 }

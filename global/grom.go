@@ -1,4 +1,4 @@
-package utils
+package global
 
 import (
 	"github.com/sun-fight/zinx-websocket/zlog"
@@ -39,7 +39,7 @@ func InitGormReadMysql() *gorm.DB {
 		sqlDB, _ := db.DB()
 		sqlDB.SetMaxIdleConns(m.MaxIdleConns)
 		sqlDB.SetMaxOpenConns(m.MaxOpenConns)
-		GlobalObject.MysqlRead = db
+		MysqlRead = db
 		return db
 	}
 }
@@ -69,7 +69,7 @@ func InitGormWriteMysql() *gorm.DB {
 		sqlDB, _ := db.DB()
 		sqlDB.SetMaxIdleConns(m.MaxIdleConns)
 		sqlDB.SetMaxOpenConns(m.MaxOpenConns)
-		GlobalObject.MysqlWrite = db
+		MysqlWrite = db
 		return db
 	}
 }

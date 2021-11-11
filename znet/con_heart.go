@@ -2,20 +2,20 @@ package znet
 
 import (
 	"fmt"
-	"github.com/sun-fight/zinx-websocket/utils"
+	"github.com/sun-fight/zinx-websocket/global"
 	"time"
 )
 
 //定时检测心跳包
 func (c *Connection) heartBeatChecker() {
-	if utils.GlobalObject.HeartbeatTime == 0 {
+	if global.GlobalObject.HeartbeatTime == 0 {
 		return
 	}
 	var (
 		timer *time.Timer
 	)
 
-	timer = time.NewTimer((utils.GlobalObject.HeartbeatTime) * time.Second)
+	timer = time.NewTimer((global.GlobalObject.HeartbeatTime) * time.Second)
 
 	for {
 		select {
@@ -26,7 +26,7 @@ func (c *Connection) heartBeatChecker() {
 				fmt.Println("连接已关闭 或者 太久没有心跳")
 				return
 			}
-			timer.Reset(time.Duration(utils.GlobalObject.HeartbeatTime) * time.Second)
+			timer.Reset(time.Duration(global.GlobalObject.HeartbeatTime) * time.Second)
 		case <-c.ctx.Done():
 			timer.Stop()
 			fmt.Println("连接已关闭")
@@ -44,7 +44,7 @@ func (c *Connection) IsAlive() bool {
 	c.Lock()
 	defer c.Unlock()
 	if c.isClosed || now.Sub(c.lastHeartBeatTime) >
-		time.Duration(utils.GlobalObject.HeartbeatTime)*time.Second {
+		time.Duration(global.GlobalObject.HeartbeatTime)*time.Second {
 		return false
 	}
 	return true

@@ -7,7 +7,7 @@
 // @Title  globalobj.go
 // @Description  相关配置文件定义及加载方式
 // @Author  Aceld - Thu Mar 11 10:32:29 CST 2019
-package utils
+package global
 
 import (
 	"fmt"
@@ -37,6 +37,10 @@ type RedisConfig struct {
 	Addr     string // 服务器地址:端口
 	Password string // 密码
 }
+
+var Redis *redis.Client
+var MysqlRead *gorm.DB
+var MysqlWrite *gorm.DB
 
 /*
 	存储一切有关Zinx框架的全局参数，供其他模块使用
@@ -79,14 +83,10 @@ type GlobalObj struct {
 	/*
 		数据库
 	*/
-	MysqlRead  *gorm.DB
-	MysqlWrite *gorm.DB
-
 	MysqlReadConfig MysqlConfig
 	//可写操作数据库连接
 	MysqlWriteConfig MysqlConfig
 	//redis
-	Redis       *redis.Client
 	RedisConfig RedisConfig
 }
 

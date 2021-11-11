@@ -5,12 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"github.com/sun-fight/zinx-websocket/global"
 	"io"
 	"net"
 	"sync"
 	"time"
 
-	"github.com/sun-fight/zinx-websocket/utils"
 	"github.com/sun-fight/zinx-websocket/ziface"
 )
 
@@ -53,7 +53,7 @@ func NewConnection(server ziface.IServer, conn *websocket.Conn, connID uint32, m
 		isClosed:    false,
 		MsgHandler:  msgHandler,
 		msgChan:     make(chan *Message),
-		msgBuffChan: make(chan *Message, utils.GlobalObject.MaxMsgChanLen),
+		msgBuffChan: make(chan *Message, global.GlobalObject.MaxMsgChanLen),
 		property:    nil,
 	}
 
@@ -71,7 +71,7 @@ func (c *Connection) StartWriter() {
 		select {
 		case msg := <-c.msgChan:
 			//读取超时
-			c.Conn.SetWriteDeadline(time.Now().Add(utils.GlobalObject.ConnWriteTimeout * time.Second))
+			c.Conn.SetWriteDeadline(time.Now().Add(global.GlobalObject.ConnWriteTimeout * time.Second))
 			//有数据要写给客户端
 			if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 				fmt.Println("Send Data error:, ", err, " Conn Writer exit")
@@ -81,7 +81,7 @@ func (c *Connection) StartWriter() {
 			//fmt.Printf("Send data succ! data = %+v\n", data)
 		case msg, ok := <-c.msgBuffChan:
 			if ok {
-				c.Conn.SetWriteDeadline(time.Now().Add(utils.GlobalObject.ConnWriteTimeout * time.Second))
+				c.Conn.SetWriteDeadline(time.Now().Add(global.GlobalObject.ConnWriteTimeout * time.Second))
 				//有数据要写给客户端
 				if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 					fmt.Println("Send Data error:, ", err, " Conn Writer exit")
@@ -111,7 +111,7 @@ func (c *Connection) StartReader() {
 			return
 		default:
 			//超时时间
-			c.Conn.SetReadDeadline(time.Now().Add(utils.GlobalObject.ConnReadTimeout * time.Second))
+			c.Conn.SetReadDeadline(time.Now().Add(global.GlobalObject.ConnReadTimeout * time.Second))
 			msgType, ioReader, err := c.Conn.NextReader()
 			if err != nil {
 				fmt.Println("get read reader error ", err)
@@ -146,7 +146,7 @@ func (c *Connection) StartReader() {
 				msg:  msg,
 			}
 			c.KeepAlive()
-			if utils.GlobalObject.WorkerPoolSize > 0 {
+			if global.GlobalObject.WorkerPoolSize > 0 {
 				//已经启动工作池机制，将消息交给Worker处理
 				c.MsgHandler.SendMsgToTaskQueue(&req)
 			} else {
@@ -161,7 +161,7 @@ func (c *Connection) StartReader() {
 func (c *Connection) Start() {
 	c.ctx, c.cancel = context.WithCancel(context.Background())
 	//设置消息最大size
-	c.Conn.SetReadLimit(int64(utils.GlobalObject.MaxPacketSize))
+	c.Conn.SetReadLimit(int64(global.GlobalObject.MaxPacketSize))
 	//1 开启用户从客户端读取数据流程的Goroutine
 	go c.StartReader()
 	//2 开启用于写回客户端数据流程的Goroutine
