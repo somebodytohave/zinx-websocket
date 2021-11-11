@@ -1,4 +1,4 @@
-module zinx-websocket
+module github.com/sun-fight/zinx-websocket
 
 go 1.17
 
@@ -9,7 +9,6 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/viper v1.9.0
-	github.com/sun-fight/zinx-websocket v0.0.0-20211111114627-34c63bd1f5c6
 	google.golang.org/protobuf v1.27.1
 	gorm.io/driver/mysql v1.1.3
 	gorm.io/gorm v1.22.2
