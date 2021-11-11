@@ -10,8 +10,9 @@
 package utils
 
 import (
-	"encoding/json"
-	"io/ioutil"
+	"fmt"
+	"github.com/fsnotify/fsnotify"
+	"github.com/spf13/viper"
 	"os"
 	"time"
 
@@ -83,15 +84,34 @@ func (g *GlobalObj) Reload() {
 		return
 	}
 
-	data, err := ioutil.ReadFile(g.ConfFilePath)
+	v := viper.New()
+	v.SetConfigFile(g.ConfFilePath)
+	v.SetConfigType("json")
+	err := v.ReadInConfig()
 	if err != nil {
-		panic(err)
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
-	//将json数据解析到struct中
-	err = json.Unmarshal(data, g)
-	if err != nil {
-		panic(err)
+	v.WatchConfig()
+
+	v.OnConfigChange(func(e fsnotify.Event) {
+		zlog.Info("config file changed:", e.Name)
+		if err := v.Unmarshal(&g); err != nil {
+			zlog.Error("配置文件更新失败", err)
+		}
+	})
+	if err := v.Unmarshal(&g); err != nil {
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
+
+	//data, err := ioutil.ReadFile(g.ConfFilePath)
+	//if err != nil {
+	//	panic(err)
+	//}
+	////将json数据解析到struct中
+	//err = json.Unmarshal(data, g)
+	//if err != nil {
+	//	panic(err)
+	//}
 
 	//Logger 设置
 	if g.LogFile != "" {
