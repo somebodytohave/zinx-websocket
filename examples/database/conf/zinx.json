@@ -1,0 +1,33 @@
+{
+  "Name": "zinx-websocket database Demo",
+  "Host": "127.0.0.1",
+  "TcpPort": 8999,
+  "MaxConn": 3,
+  "WorkerPoolSize": 10,
+  "LogDir": "./mylog",
+  "LogFile": "zinx.log",
+  "HeartbeatTime": 60,
+  "MysqlReadConfig": {
+    "Path": "127.0.0.1:3306",
+    "Config": "",
+    "Dbname": "test",
+    "Username": "readuser",
+    "Password": "123456",
+    "MaxIdleConns": 10,
+    "MaxOpenConns": 100
+  },
+  "MysqlWriteConfig": {
+    "Path": "127.0.0.1:3306",
+    "Config": "",
+    "Dbname": "test",
+    "Username": "root",
+    "Password": "123456",
+    "MaxIdleConns": 10,
+    "MaxOpenConns": 100
+  },
+  "RedisConfig": {
+    "DB": 0,
+    "Addr": "127.0.0.1:6379",
+    "Password": ""
+  }
+}

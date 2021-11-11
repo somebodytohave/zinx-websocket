@@ -12,13 +12,31 @@ package utils
 import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
+	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 	"os"
 	"time"
 
 	"github.com/sun-fight/zinx-websocket/ziface"
 	"github.com/sun-fight/zinx-websocket/zlog"
 )
+
+type MysqlConfig struct {
+	Path         string //服务器地址:端口
+	Config       string // 高级配置
+	Dbname       string // 数据库名
+	Username     string // 数据库用户名
+	Password     string // 数据库密码
+	MaxIdleConns int    // 空闲中的最大连接数
+	MaxOpenConns int    // 打开到数据库的最大连接数
+}
+
+type RedisConfig struct {
+	DB       int    // redis的哪个数据库
+	Addr     string // 服务器地址:端口
+	Password string // 密码
+}
 
 /*
 	存储一切有关Zinx框架的全局参数，供其他模块使用
@@ -57,6 +75,19 @@ type GlobalObj struct {
 	LogDir        string //日志所在文件夹 默认"./log"
 	LogFile       string //日志文件名称   默认""  --如果没有设置日志文件，打印信息将打印至stderr
 	LogDebugClose bool   //是否关闭Debug日志级别调试信息 默认false  -- 默认打开debug信息
+
+	/*
+		数据库
+	*/
+	MysqlRead  *gorm.DB
+	MysqlWrite *gorm.DB
+
+	MysqlReadConfig MysqlConfig
+	//可写操作数据库连接
+	MysqlWriteConfig MysqlConfig
+	//redis
+	Redis       *redis.Client
+	RedisConfig RedisConfig
 }
 
 /*

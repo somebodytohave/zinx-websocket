@@ -62,14 +62,14 @@ var levels = []string{
 }
 
 type ZinxLogger struct {
-	mu sync.Mutex 		//确保多协程读写文件，防止文件内容混乱，做到协程安全
-	prefix string 		//每行log日志的前缀字符串,拥有日志标记
-	flag int 			//日志标记位
-	out io.Writer 		//日志输出的文件描述符
-	buf bytes.Buffer 	//输出的缓冲区
-	file *os.File 		//当前日志绑定的输出文件
-	debugClose bool 	//是否打印调试debug信息
-	calldDepth int 		//获取日志文件名和代码上述的runtime.Call 的函数调用层数
+	mu         sync.Mutex   //确保多协程读写文件，防止文件内容混乱，做到协程安全
+	prefix     string       //每行log日志的前缀字符串,拥有日志标记
+	flag       int          //日志标记位
+	out        io.Writer    //日志输出的文件描述符
+	buf        bytes.Buffer //输出的缓冲区
+	file       *os.File     //当前日志绑定的输出文件
+	debugClose bool         //是否打印调试debug信息
+	calldDepth int          //获取日志文件名和代码上述的runtime.Call 的函数调用层数
 }
 
 /*
