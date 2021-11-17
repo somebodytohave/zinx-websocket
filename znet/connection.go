@@ -272,7 +272,7 @@ func (c *Connection) SendBuffMsg(msgID uint16, msgType int, data []byte) (err er
 	msg.SetData(pack)
 	select {
 	//写回客户端
-	case c.msgChan <- msg:
+	case c.msgBuffChan <- msg:
 	default: // 写操作不会阻塞, 因为channel已经预留给websocket一定的缓冲空间
 		err = errors.New("ERR_SEND_Buff_MESSAGE_FULL")
 	}
