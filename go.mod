@@ -7,8 +7,10 @@ require (
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/gorilla/websocket v1.4.2
+	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/viper v1.9.0
+	go.uber.org/zap v1.19.1
 	google.golang.org/protobuf v1.27.1
 	gorm.io/driver/mysql v1.1.3
 	gorm.io/gorm v1.22.2
@@ -26,9 +28,9 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.2 // indirect
+	github.com/jonboulle/clockwork v0.2.2 // indirect
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
-	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible // indirect
 	github.com/lestrrat-go/strftime v1.0.5 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
@@ -44,7 +46,6 @@ require (
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
-	go.uber.org/zap v1.19.1 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
 	golang.org/x/text v0.3.6 // indirect
