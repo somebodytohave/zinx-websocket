@@ -30,6 +30,7 @@ type MysqlConfig struct {
 	Password     string // 数据库密码
 	MaxIdleConns int    // 空闲中的最大连接数
 	MaxOpenConns int    // 打开到数据库的最大连接数
+	LogMode      string // 日志模式
 }
 
 type RedisConfig struct {

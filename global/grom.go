@@ -1,9 +1,11 @@
 package global
 
 import (
+	"github.com/sun-fight/zinx-websocket/global/internal"
 	"github.com/sun-fight/zinx-websocket/zlog"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"os"
 )
@@ -85,5 +87,17 @@ func InitGormWriteMysql() *gorm.DB {
 func gormConfig() *gorm.Config {
 	config := &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true,
 		NamingStrategy: schema.NamingStrategy{SingularTable: true}}
+	switch GlobalObject.MysqlReadConfig.LogMode {
+	case "silent", "Silent":
+		config.Logger = internal.Default.LogMode(logger.Silent)
+	case "error", "Error":
+		config.Logger = internal.Default.LogMode(logger.Error)
+	case "warn", "Warn":
+		config.Logger = internal.Default.LogMode(logger.Warn)
+	case "info", "Info":
+		config.Logger = internal.Default.LogMode(logger.Info)
+	default:
+		config.Logger = internal.Default.LogMode(logger.Info)
+	}
 	return config
 }
