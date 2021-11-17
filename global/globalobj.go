@@ -68,6 +68,7 @@ type GlobalObj struct {
 	Name      string         //当前服务器名称
 	// 详见[doublemsgid](https://github.com/sun-fight/zinx-websocket/tree/master/examples/doublemsgid)案例
 	DoubleMsgID uint16 //(主子)双命令号模式(默认1单命令号模式)
+	Env         string // develop production
 
 	/*
 		Zinx
@@ -161,6 +162,7 @@ func init() {
 		Version:          "V0.11",
 		TCPPort:          8999,
 		Host:             "0.0.0.0",
+		Env:              "production",
 		DoubleMsgID:      1,
 		MaxConn:          12000,
 		MaxPacketSize:    4096,
