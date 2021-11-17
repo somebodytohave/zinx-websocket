@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/sun-fight/zinx-websocket/zlog"
+	
 )
 
 /*
@@ -41,7 +41,7 @@ func (df *DelayFunc) String() string {
 func (df *DelayFunc) Call() {
 	defer func() {
 		if err := recover(); err != nil {
-			zlog.Error(df.String(), "Call err: ", err)
+			global.Glog.Error(df.String(), "Call err: ", err)
 		}
 	}()
 

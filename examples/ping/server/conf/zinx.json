@@ -5,5 +5,16 @@
   "MaxConn": 3,
   "WorkerPoolSize": 10,
   "LogDir": "./mylog",
-  "HeartbeatTime": 60
+  "HeartbeatTime": 60,
+  "ZapConfig": {
+    "level": "error",
+    "format": "console",
+    "prefix": "[zinx-websocket]",
+    "director": "log",
+    "linkName": "latest_log",
+    "showLine": true,
+    "encodeLevel": "LowercaseColorLevelEncoder",
+    "stacktraceKey": "stacktrace",
+    "logInConsole": true
+  }
 }

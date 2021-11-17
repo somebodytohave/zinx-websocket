@@ -3,7 +3,7 @@ package global
 import (
 	"context"
 	"github.com/go-redis/redis/v8"
-	"github.com/sun-fight/zinx-websocket/zlog"
+	"go.uber.org/zap"
 )
 
 func InitRedis() {
@@ -15,9 +15,9 @@ func InitRedis() {
 	})
 	pong, err := client.Ping(context.Background()).Result()
 	if err != nil {
-		zlog.Fatal("redis connect ping failed, err:", err)
+		Glog.Fatal("redis connect ping failed, err:", zap.Error(err))
 	} else {
-		zlog.Info("redis connect ping response:", pong)
+		Glog.Info("redis connect ping response:" + pong)
 		Redis = client
 	}
 }

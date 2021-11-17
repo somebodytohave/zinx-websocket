@@ -2,8 +2,10 @@ package api
 
 import (
 	"fmt"
+	"github.com/sun-fight/zinx-websocket/global"
 	"github.com/sun-fight/zinx-websocket/ziface"
-	"github.com/sun-fight/zinx-websocket/zlog"
+	"go.uber.org/zap"
+
 	"github.com/sun-fight/zinx-websocket/znet"
 )
 
@@ -14,8 +16,9 @@ type TestRouter struct {
 
 //Handle
 func (this *TestRouter) Handle(request ziface.IRequest) {
-	zlog.Debug("Call TestRouter Handle")
-	zlog.Debug("recv from client : msgId=", request.GetMsgID(), ", data=", string(request.GetData()))
+	global.Glog.Debug("Call TestRouter Handle")
+	global.Glog.Debug("recv from client : ", zap.Any("msgid", request.GetMsgID()),
+		zap.Any("data", string(request.GetData())))
 
 	switch request.GetMsgID() {
 	case 1001: //登录

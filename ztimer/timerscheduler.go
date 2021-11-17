@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sun-fight/zinx-websocket/zlog"
+	
 )
 
 const (
@@ -128,7 +128,7 @@ func (ts *TimerScheduler) Start() {
 			for tID, timer := range timerList {
 				if math.Abs(float64(now-timer.unixts)) > MaxTimeDelay {
 					//已经超时的定时器，报警
-					zlog.Error("want call at ", timer.unixts, "; real call at", now, "; delay ", now-timer.unixts)
+					global.Glog.Error("want call at ", timer.unixts, "; real call at", now, "; delay ", now-timer.unixts)
 				}
 				if ts.HasTimer(tID) {
 					//将超时触发函数写入管道

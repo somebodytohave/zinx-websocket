@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/sun-fight/zinx-websocket/examples/protobuf/pb"
-	"github.com/sun-fight/zinx-websocket/zlog"
+	
 	"github.com/sun-fight/zinx-websocket/znet"
 	"google.golang.org/protobuf/proto"
 	"io"
@@ -75,9 +75,9 @@ func main() {
 			req := pb.ReqHeart{}
 			err = proto.Unmarshal(data, &req)
 			if err != nil {
-				zlog.Error(err)
+				global.Glog.Error(err)
 			}
-			zlog.Debug(req.String())
+			global.Glog.Debug(req.String())
 		}
 	}()
 
@@ -93,7 +93,7 @@ func main() {
 			var req pb.ReqHeart
 			marshal, err := proto.Marshal(&req)
 			if err != nil {
-				zlog.Error(err)
+				global.Glog.Error(err)
 			}
 			msgPackage := znet.NewBinaryMsgPackage(1, marshal)
 			pack, err := znet.NewDataPack().Pack(msgPackage)

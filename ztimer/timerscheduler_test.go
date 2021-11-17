@@ -10,11 +10,11 @@ package ztimer
 
 import (
 	"fmt"
+	"github.com/sun-fight/zinx-websocket/global"
+	"go.uber.org/zap"
 	"log"
 	"testing"
 	"time"
-
-	"github.com/sun-fight/zinx-websocket/zlog"
 )
 
 //触发函数
@@ -32,7 +32,7 @@ func TestNewTimerScheduler(t *testing.T) {
 		f := NewDelayFunc(foo, []interface{}{i, i * 3})
 		tID, err := timerScheduler.CreateTimerAfter(f, time.Duration(3*i)*time.Millisecond)
 		if err != nil {
-			zlog.Error("create timer error", tID, err)
+			global.Glog.Error("create timer error", zap.Any("tID", tID), zap.Error(err))
 			break
 		}
 	}
@@ -58,7 +58,7 @@ func TestNewAutoExecTimerScheduler(t *testing.T) {
 		f := NewDelayFunc(foo, []interface{}{i, i * 3})
 		tID, err := autoTS.CreateTimerAfter(f, time.Duration(3*i)*time.Millisecond)
 		if err != nil {
-			zlog.Error("create timer error", tID, err)
+			global.Glog.Error("create timer error", zap.Any("tID", tID), zap.Error(err))
 			break
 		}
 	}

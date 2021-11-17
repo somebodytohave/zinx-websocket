@@ -14,12 +14,12 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"os"
 	"time"
 
 	"github.com/sun-fight/zinx-websocket/ziface"
-	"github.com/sun-fight/zinx-websocket/zlog"
 )
 
 type MysqlConfig struct {
@@ -37,6 +37,17 @@ type RedisConfig struct {
 	DB       int    // redis的哪个数据库
 	Addr     string // 服务器地址:端口
 	Password string // 密码
+}
+type ZapConfig struct {
+	Level         string `mapstructure:"level" json:"level" yaml:"level"`                           // 级别
+	Format        string `mapstructure:"format" json:"format" yaml:"format"`                        // 输出
+	Prefix        string `mapstructure:"prefix" json:"prefix" yaml:"prefix"`                        // 日志前缀
+	Director      string `mapstructure:"director" json:"director"  yaml:"director"`                 // 日志文件夹
+	LinkName      string `mapstructure:"link-name" json:"linkName" yaml:"link-name"`                // 软链接名称
+	ShowLine      bool   `mapstructure:"show-line" json:"showLine" yaml:"showLine"`                 // 显示行
+	EncodeLevel   string `mapstructure:"encode-level" json:"encodeLevel" yaml:"encode-level"`       // 编码级
+	StacktraceKey string `mapstructure:"stacktrace-key" json:"stacktraceKey" yaml:"stacktrace-key"` // 栈名
+	LogInConsole  bool   `mapstructure:"log-in-console" json:"logInConsole" yaml:"log-in-console"`  // 输出控制台
 }
 
 var Redis *redis.Client
@@ -77,11 +88,9 @@ type GlobalObj struct {
 	ConfFilePath string
 
 	/*
-		logger
+		zap
 	*/
-	LogDir        string //日志所在文件夹 默认"./log"
-	LogFile       string //日志文件名称   默认""  --如果没有设置日志文件，打印信息将打印至stderr
-	LogDebugClose bool   //是否关闭Debug日志级别调试信息 默认false  -- 默认打开debug信息
+	ZapConfig ZapConfig
 
 	/*
 		数据库
@@ -112,9 +121,8 @@ func PathExists(path string) (bool, error) {
 
 //Reload 读取用户的配置文件
 func (g *GlobalObj) Reload() {
-
 	if confFileExists, _ := PathExists(g.ConfFilePath); confFileExists != true {
-		zlog.Error("Config File " + g.ConfFilePath + " is not exist!!")
+		Glog.Error("Config File " + g.ConfFilePath + " is not exist!!")
 		return
 	}
 
@@ -128,32 +136,15 @@ func (g *GlobalObj) Reload() {
 	v.WatchConfig()
 
 	v.OnConfigChange(func(e fsnotify.Event) {
-		zlog.Info("config file changed:", e.Name)
+		Glog.Info("config file changed:" + e.Name)
 		if err := v.Unmarshal(&g); err != nil {
-			zlog.Error("配置文件更新失败", err)
+			Glog.Error("配置文件更新失败", zap.Error(err))
 		}
 	})
 	if err := v.Unmarshal(&g); err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
 
-	//data, err := ioutil.ReadFile(g.ConfFilePath)
-	//if err != nil {
-	//	panic(err)
-	//}
-	////将json数据解析到struct中
-	//err = json.Unmarshal(data, g)
-	//if err != nil {
-	//	panic(err)
-	//}
-
-	//Logger 设置
-	if g.LogFile != "" {
-		zlog.SetLogFile(g.LogDir, g.LogFile)
-	}
-	if g.LogDebugClose == true {
-		zlog.CloseDebug()
-	}
 }
 
 /*
@@ -177,12 +168,20 @@ func init() {
 		WorkerPoolSize:   10,
 		MaxWorkerTaskLen: 1024,
 		MaxMsgChanLen:    1024,
-		LogDir:           pwd + "/log",
-		LogFile:          "",
-		LogDebugClose:    false,
 		HeartbeatTime:    60,
 		ConnReadTimeout:  60,
 		ConnWriteTimeout: 60,
+		ZapConfig: ZapConfig{
+			Level:         "info",
+			Format:        "console",
+			Prefix:        "[zinx-websocket]",
+			Director:      "log",
+			LinkName:      "latest_log",
+			ShowLine:      true,
+			EncodeLevel:   "LowercaseColorLevelEncoder",
+			StacktraceKey: "stacktrace",
+			LogInConsole:  true,
+		},
 	}
 
 	//NOTE: 从配置文件中加载一些用户配置的参数

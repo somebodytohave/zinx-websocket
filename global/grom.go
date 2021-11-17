@@ -2,7 +2,8 @@ package global
 
 import (
 	"github.com/sun-fight/zinx-websocket/global/internal"
-	"github.com/sun-fight/zinx-websocket/zlog"
+	"go.uber.org/zap"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -12,7 +13,7 @@ import (
 
 //if GlobalObject.MysqlRead != nil {
 //	// 程序结束前关闭数据库链接
-//	db, _ := global.MysqlRead.DB()
+//	db, _ := MysqlRead.DB()
 //	defer db.Close()
 //}
 
@@ -35,7 +36,7 @@ func InitGormReadMysql() *gorm.DB {
 		SkipInitializeWithVersion: false, // 根据版本自动配置
 	}
 	if db, err := gorm.Open(mysql.New(mysqlConfig), gormConfig()); err != nil {
-		zlog.Error("MySQL启动异常", err)
+		Glog.Error("MySQL启动异常", zap.Error(err))
 		os.Exit(0)
 		//return nil
 		return nil
@@ -65,7 +66,7 @@ func InitGormWriteMysql() *gorm.DB {
 		SkipInitializeWithVersion: false, // 根据版本自动配置
 	}
 	if db, err := gorm.Open(mysql.New(mysqlConfig), gormConfig()); err != nil {
-		zlog.Error("MySQL启动异常", err)
+		Glog.Error("MySQL启动异常", zap.Error(err))
 		os.Exit(0)
 		//return nil
 		return nil
