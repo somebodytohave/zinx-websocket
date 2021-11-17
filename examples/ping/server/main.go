@@ -15,6 +15,6 @@ func main() {
 	bindAddress := fmt.Sprintf("%s:%d", global.GlobalObject.Host, global.GlobalObject.TCPPort)
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
-	router.GET("/", server.Serve)
+	router.GET("/ws", server.Serve)
 	router.Run(bindAddress)
 }

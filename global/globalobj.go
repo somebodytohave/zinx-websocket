@@ -54,6 +54,8 @@ type GlobalObj struct {
 	Host      string         //当前服务器主机IP
 	TCPPort   int            //当前服务器主机监听端口号
 	Name      string         //当前服务器名称
+	// 详见[doublemsgid](https://github.com/sun-fight/zinx-websocket/tree/master/examples/doublemsgid)案例
+	DoubleMsgID uint16 //(主子)双命令号模式(默认1单命令号模式)
 
 	/*
 		Zinx
@@ -111,7 +113,7 @@ func PathExists(path string) (bool, error) {
 func (g *GlobalObj) Reload() {
 
 	if confFileExists, _ := PathExists(g.ConfFilePath); confFileExists != true {
-		//fmt.Println("Config File ", g.ConfFilePath , " is not exist!!")
+		zlog.Error("Config File " + g.ConfFilePath + " is not exist!!")
 		return
 	}
 
@@ -167,6 +169,7 @@ func init() {
 		Version:          "V0.11",
 		TCPPort:          8999,
 		Host:             "0.0.0.0",
+		DoubleMsgID:      1,
 		MaxConn:          12000,
 		MaxPacketSize:    4096,
 		ConfFilePath:     pwd + "/conf/zinx.json",

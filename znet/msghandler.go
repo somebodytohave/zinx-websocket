@@ -42,7 +42,7 @@ func (mh *MsgHandle) SendMsgToTaskQueue(request ziface.IRequest) {
 
 //DoMsgHandler 马上以非阻塞方式处理消息
 func (mh *MsgHandle) DoMsgHandler(request ziface.IRequest) {
-	handler, ok := mh.Apis[request.GetMsgID()]
+	handler, ok := mh.Apis[request.GetMsgID()/global.GlobalObject.DoubleMsgID]
 	if !ok {
 		fmt.Println("api msgID = ", request.GetMsgID(), " is not FOUND!")
 		return

@@ -72,16 +72,23 @@ func main() {
 		}
 	}()
 
-	ticker := time.NewTicker(time.Second)
+	ticker := time.NewTicker(time.Second * 1)
 	defer ticker.Stop()
-
+	var count int
 	for {
 		select {
 		case <-done:
 			return
-		case t := <-ticker.C:
+		case _ = <-ticker.C:
 			//------重点看这  每秒向服务器发送消息
-			msgPackage := znet.NewBinaryMsgPackage(1, []byte(t.String()))
+			count++
+			msgID := 1001
+			text := "执行登录"
+			if count%2 == 0 {
+				msgID = 1002
+				text = "执行退出登录"
+			}
+			msgPackage := znet.NewBinaryMsgPackage(uint16(msgID), []byte(text))
 			pack, err := znet.NewDataPack().Pack(msgPackage)
 			if err != nil {
 				log.Println("write:", err)
