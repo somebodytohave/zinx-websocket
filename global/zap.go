@@ -15,7 +15,14 @@ var level zapcore.Level
 var Glog *zap.Logger
 
 func init() {
-	zapConfig := GlobalObject.ZapConfig
+	initZap()
+}
+
+func initZap() {
+	zapConfig := ZapConfig{}
+	if GlobalObject != nil {
+		zapConfig = GlobalObject.ZapConfig
+	}
 	dir := zapConfig.Director
 	if ok, _ := PathExists(dir); !ok { // 判断是否有Director文件夹
 		fmt.Printf("create %v directory\n", dir)

@@ -80,5 +80,5 @@ func TestTimerWheel(t *testing.T) {
 	}()
 
 	//主进程等待其他go，由于Run()方法是用一个新的go承载延迟方法，这里不能用waitGroup
-	time.Sleep(10 * time.Minute)
+	time.Sleep(1 * time.Minute)
 }

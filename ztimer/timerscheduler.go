@@ -10,11 +10,11 @@ package ztimer
  */
 
 import (
+	"github.com/spf13/cast"
+	"github.com/sun-fight/zinx-websocket/global"
 	"math"
 	"sync"
 	"time"
-
-	
 )
 
 const (
@@ -128,7 +128,9 @@ func (ts *TimerScheduler) Start() {
 			for tID, timer := range timerList {
 				if math.Abs(float64(now-timer.unixts)) > MaxTimeDelay {
 					//已经超时的定时器，报警
-					global.Glog.Error("want call at ", timer.unixts, "; real call at", now, "; delay ", now-timer.unixts)
+					global.Glog.Error("want call at " + cast.ToString(timer.unixts) +
+						"; real call at" + cast.ToString(now) + "; delay " +
+						cast.ToString(now-timer.unixts))
 				}
 				if ts.HasTimer(tID) {
 					//将超时触发函数写入管道
