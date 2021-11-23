@@ -1,18 +1,25 @@
-# 基于zinx框架二次开发(websocket版)
+# 基于zinx二次开发为->(websocket版)
 
-- 用到mysql需要安装驱动`gorm.io/driver/mysql`
 - tcp协议改为websocket
+- 可单(1001)/主(1)子(1001)命令切换
+- 丰富的demo
 - 新增心跳检测功能
+- 若用到mysql需要安装驱动`gorm.io/driver/mysql`
 
+## 案例demo
+
+### [ping-服务器与客户端的简单通信demo](https://github.com/sun-fight/zinx-websocket/tree/master/examples/ping)
+### [protobuf-消息协议](https://github.com/sun-fight/zinx-websocket/tree/master/examples/protobuf)
+### [doublemsgid-使用主子命令模式](https://github.com/sun-fight/zinx-websocket/tree/master/examples/doublemsgid)
+### [database-支持mysql-redis](https://github.com/sun-fight/zinx-websocket/tree/master/examples/database)
+
+
+## 教程
 [zinx(TCP版本)](https://github.com/aceld/zinx)
 
 [看云-《zinx框架教程-基于Golang的轻量级并发服务器》](https://www.kancloud.cn/aceld/zinx)
 
 [简书-《zinx框架教程-基于Golang的轻量级并发服务器》](https://www.jianshu.com/p/23d07c0a28e5)
-
-## 案例demo
-
-### [ping-服务器与客户端的简单通信demo](https://github.com/sun-fight/zinx-websocket/tree/master/examples/ping)
 
 ### 一、快速上手
 
@@ -31,7 +38,7 @@ server := znet.NewServer()
 server.AddRouter(1, &api.PingRouter{})
 
 //3 开启服务
-bindAddress := fmt.Sprintf("%s:%d", utils.GlobalObject.Host, utils.GlobalObject.TCPPort)
+bindAddress := fmt.Sprintf("%s:%d", global.GlobalObject.Host, global.GlobalObject.TCPPort)
 router := gin.Default()
 router.GET("/", server.Serve)
 router.Run(bindAddress)
@@ -48,7 +55,7 @@ zinx的消息处理采用，`[MsgLength]|[MsgID]|[Data]`的封包格式
 
 ### zinx配置文件
 
-[详细配置文件说明与默认值](https://github.com/sun-fight/zinx-websocket/blob/master/utils/globalobj.go)
+[详细配置文件说明与默认值](https://github.com/sun-fight/zinx-websocket/blob/master/global/globalobj.go)
 
 ```json
 {
