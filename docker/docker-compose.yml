@@ -1,0 +1,39 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    build: ./mysql
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/init:/docker-entrypoint-initdb.d/
+      - my_mysql:/var/lib/mysql # 映射数据库保存目录到宿主机，防止数据丢失
+      - my_mysql_log:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      # MYSQL_DATABASE: "test"
+    command:
+      # MySQL8的密码验证方式默认是 caching_sha2_password，但是很多的连接工具还不支持该方式
+      # 就需要手动设置下mysql的密码认证方式为以前的 mysql_native_password 方式
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-authentication-plugin=mysql_native_password
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    build: ./redis
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - my_redis:/data
+
+#默认目录 /var/lib/docker/volumes/docker_{volumes name}/_data
+volumes:
+  my_mysql:
+  my_mysql_log:
+  my_redis:

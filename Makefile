@@ -26,3 +26,8 @@ build:
 clean:
 	rm $(SERVER_DEMO_BIN)
 	rm $(CLIENT_DEMO_BIN)
+	cd docker && docker compose stop && docker compose rm
+
+up:
+	cd docker && docker compose build --no-cache && docker compose up -d
+

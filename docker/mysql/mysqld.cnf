@@ -1,0 +1,7 @@
+[client]
+
+[mysql]
+no-auto-rehash
+auto-rehash
+default-character-set=utf8mb4
+[mysqld]
