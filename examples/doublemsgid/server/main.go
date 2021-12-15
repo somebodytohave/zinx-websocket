@@ -12,11 +12,11 @@ func main() {
 	server := znet.NewServer()
 	//比如 已有命令号 1001登录  1002退出登录
 	// 1 = 主命令 = 1001/DoubleMsgID. 配置表zinx.json DoubleMsgID:1000
-	mainCmd := 1001 / global.GlobalObject.DoubleMsgID
+	mainCmd := 1001 / global.Object.DoubleMsgID
 	//testRouter解析主命令包含所有 1xxx的子命令
 	server.AddRouter(mainCmd, &api.TestRouter{})
 
-	bindAddress := fmt.Sprintf("%s:%d", global.GlobalObject.Host, global.GlobalObject.TCPPort)
+	bindAddress := fmt.Sprintf("%s:%d", global.Object.Host, global.Object.TCPPort)
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
 	router.GET("/ws", server.Serve)

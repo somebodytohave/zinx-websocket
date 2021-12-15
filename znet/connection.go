@@ -53,7 +53,7 @@ func NewConnection(server ziface.IServer, conn *websocket.Conn, connID uint32, m
 		isClosed:    false,
 		MsgHandler:  msgHandler,
 		msgChan:     make(chan *Message),
-		msgBuffChan: make(chan *Message, global.GlobalObject.MaxMsgChanLen),
+		msgBuffChan: make(chan *Message, global.Object.MaxMsgChanLen),
 		property:    nil,
 	}
 
@@ -71,7 +71,7 @@ func (c *Connection) StartWriter() {
 		select {
 		case msg := <-c.msgChan:
 			//读取超时
-			c.Conn.SetWriteDeadline(time.Now().Add(global.GlobalObject.ConnWriteTimeout * time.Second))
+			c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
 			//有数据要写给客户端
 			if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 				fmt.Println("Send Data error:, ", err, " Conn Writer exit")
@@ -81,7 +81,7 @@ func (c *Connection) StartWriter() {
 			//fmt.Printf("Send data succ! data = %+v\n", data)
 		case msg, ok := <-c.msgBuffChan:
 			if ok {
-				c.Conn.SetWriteDeadline(time.Now().Add(global.GlobalObject.ConnWriteTimeout * time.Second))
+				c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
 				//有数据要写给客户端
 				if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 					fmt.Println("Send Data error:, ", err, " Conn Writer exit")
@@ -111,7 +111,7 @@ func (c *Connection) StartReader() {
 			return
 		default:
 			//超时时间
-			c.Conn.SetReadDeadline(time.Now().Add(global.GlobalObject.ConnReadTimeout * time.Second))
+			c.Conn.SetReadDeadline(time.Now().Add(global.Object.ConnReadTimeout * time.Second))
 			msgType, ioReader, err := c.Conn.NextReader()
 			if err != nil {
 				fmt.Println("get read reader error ", err)
@@ -146,7 +146,7 @@ func (c *Connection) StartReader() {
 				msg:  msg,
 			}
 			c.KeepAlive()
-			if global.GlobalObject.WorkerPoolSize > 0 {
+			if global.Object.WorkerPoolSize > 0 {
 				//已经启动工作池机制，将消息交给Worker处理
 				c.MsgHandler.SendMsgToTaskQueue(&req)
 			} else {
@@ -161,7 +161,7 @@ func (c *Connection) StartReader() {
 func (c *Connection) Start() {
 	c.ctx, c.cancel = context.WithCancel(context.Background())
 	//设置消息最大size
-	c.Conn.SetReadLimit(int64(global.GlobalObject.MaxPacketSize))
+	c.Conn.SetReadLimit(int64(global.Object.MaxPacketSize))
 	//1 开启用户从客户端读取数据流程的Goroutine
 	go c.StartReader()
 	//2 开启用于写回客户端数据流程的Goroutine
@@ -258,7 +258,7 @@ func (c *Connection) SendBuffMsg(msgID uint16, msgType int, data []byte) (err er
 	c.RLock()
 	defer c.RUnlock()
 	if c.isClosed == true {
-		return errors.New("Connection closed when send buff msg")
+		return errors.New("connection closed when send buff msg")
 	}
 
 	//将data封包，并且发送
@@ -310,7 +310,7 @@ func (c *Connection) RemoveProperty(key string) {
 	delete(c.property, key)
 }
 
-//返回ctx，用于用户自定义的go程获取连接退出状态
+//Context 返回ctx，用于用户自定义的go程获取连接退出状态
 func (c *Connection) Context() context.Context {
 	return c.ctx
 }

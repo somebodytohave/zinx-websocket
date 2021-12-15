@@ -34,7 +34,7 @@ func NewBinaryMsgPackage(ID uint16, data []byte) *Message {
 	}
 }
 
-//获取消息类型
+//GetMsgType 获取消息类型
 func (msg *Message) GetMsgType() int {
 	return msg.MsgType
 }
@@ -74,7 +74,7 @@ func (msg *Message) SetMsgType(msgType int) {
 	msg.MsgType = msgType
 }
 
-//SetMsgType 设置消息类型 websocket
+//ToString 设置消息类型 websocket
 func (msg *Message) ToString() {
 	fmt.Printf("msgID = %v, GetMsgType = %v, GetDataLen = %v, GetData = %v",
 		msg.GetMsgID(), msg.GetMsgType(), msg.GetDataLen(), cast.ToString(msg.GetData()))

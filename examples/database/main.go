@@ -17,7 +17,7 @@ func main() {
 	fmt.Println(global.MysqlWrite)
 	fmt.Println(global.Redis)
 
-	bindAddress := fmt.Sprintf("%s:%d", global.GlobalObject.Host, global.GlobalObject.TCPPort)
+	bindAddress := fmt.Sprintf("%s:%d", global.Object.Host, global.Object.TCPPort)
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
 	router.GET("/ws", server.Serve)

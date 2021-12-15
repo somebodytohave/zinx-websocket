@@ -7,7 +7,7 @@ import (
 )
 
 func InitRedis() {
-	redisCfg := GlobalObject.RedisConfig
+	redisCfg := Object.RedisConfig
 	client := redis.NewClient(&redis.Options{
 		Addr:     redisCfg.Addr,
 		Password: redisCfg.Password, // no password set

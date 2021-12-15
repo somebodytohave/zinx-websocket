@@ -52,10 +52,10 @@ func NewServer(opts ...Option) ziface.IServer {
 	printLogo()
 
 	s := &Server{
-		Name:       global.GlobalObject.Name,
+		Name:       global.Object.Name,
 		IPVersion:  "tcp4",
-		IP:         global.GlobalObject.Host,
-		Port:       global.GlobalObject.TCPPort,
+		IP:         global.Object.Host,
+		Port:       global.Object.TCPPort,
 		msgHandler: NewMsgHandle(),
 		ConnMgr:    NewConnManager(),
 		packet:     NewDataPack(),
@@ -176,9 +176,9 @@ func printLogo() {
 	//fmt.Println(fmt.Sprintf("%s [tutorial] https://www.kancloud.cn/aceld/zinx     %s", borderLine, borderLine))
 	//fmt.Println(bottomLine)
 	fmt.Printf("[Zinx] Version: %s, MaxConn: %d, MaxPacketSize: %d\n",
-		global.GlobalObject.Version,
-		global.GlobalObject.MaxConn,
-		global.GlobalObject.MaxPacketSize)
+		global.Object.Version,
+		global.Object.MaxConn,
+		global.Object.MaxPacketSize)
 }
 
 func init() {

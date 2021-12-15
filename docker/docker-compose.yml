@@ -7,7 +7,7 @@ services:
     build: ./mysql
     restart: always
     ports:
-      - 3306:3306
+      - "3306:3306"
     volumes:
       - ./mysql/init:/docker-entrypoint-initdb.d/
       - my_mysql:/var/lib/mysql # 映射数据库保存目录到宿主机，防止数据丢失
@@ -28,7 +28,7 @@ services:
     build: ./redis
     restart: always
     ports:
-      - 6379:6379
+      - "6379:6379"
     volumes:
       - my_redis:/data
 

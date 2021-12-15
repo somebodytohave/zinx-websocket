@@ -19,9 +19,9 @@ type MsgHandle struct {
 func NewMsgHandle() *MsgHandle {
 	m := &MsgHandle{
 		Apis:           make(map[uint16]ziface.IRouter),
-		WorkerPoolSize: global.GlobalObject.WorkerPoolSize,
+		WorkerPoolSize: global.Object.WorkerPoolSize,
 		//一个worker对应一个queue
-		TaskQueue: make([]chan ziface.IRequest, global.GlobalObject.WorkerPoolSize),
+		TaskQueue: make([]chan ziface.IRequest, global.Object.WorkerPoolSize),
 	}
 	//0 启动worker工作池机制
 	m.StartWorkerPool()
@@ -42,7 +42,7 @@ func (mh *MsgHandle) SendMsgToTaskQueue(request ziface.IRequest) {
 
 //DoMsgHandler 马上以非阻塞方式处理消息
 func (mh *MsgHandle) DoMsgHandler(request ziface.IRequest) {
-	handler, ok := mh.Apis[request.GetMsgID()/global.GlobalObject.DoubleMsgID]
+	handler, ok := mh.Apis[request.GetMsgID()/global.Object.DoubleMsgID]
 	if !ok {
 		fmt.Println("api msgID = ", request.GetMsgID(), " is not FOUND!")
 		return
@@ -84,7 +84,7 @@ func (mh *MsgHandle) StartWorkerPool() {
 	for i := 0; i < int(mh.WorkerPoolSize); i++ {
 		//一个worker被启动
 		//给当前worker对应的任务队列开辟空间
-		mh.TaskQueue[i] = make(chan ziface.IRequest, global.GlobalObject.MaxWorkerTaskLen)
+		mh.TaskQueue[i] = make(chan ziface.IRequest, global.Object.MaxWorkerTaskLen)
 		//启动当前Worker，阻塞的等待对应的任务队列是否有消息传递进来
 		go mh.StartOneWorker(i, mh.TaskQueue[i])
 	}

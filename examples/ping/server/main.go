@@ -12,7 +12,7 @@ func main() {
 	server := znet.NewServer()
 	server.AddRouter(1, &api.PingRouter{})
 
-	bindAddress := fmt.Sprintf("%s:%d", global.GlobalObject.Host, global.GlobalObject.TCPPort)
+	bindAddress := fmt.Sprintf("%s:%d", global.Object.Host, global.Object.TCPPort)
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
 	router.GET("/ws", server.Serve)

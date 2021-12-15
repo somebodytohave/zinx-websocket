@@ -15,11 +15,11 @@ package ziface
 
 import "github.com/gin-gonic/gin"
 
-//定义服务接口
+// IServer 定义服务接口
 type IServer interface {
 	Start(c *gin.Context)                   //启动服务器方法
 	Stop()                                  //停止服务器方法
-	Serve(c *gin.Context)                                 //开启业务服务方法
+	Serve(c *gin.Context)                   //开启业务服务方法
 	AddRouter(msgID uint16, router IRouter) //路由功能：给当前服务注册一个路由业务方法，供客户端链接处理使用
 	GetConnMgr() IConnManager               //得到链接管理
 	SetOnConnStart(func(IConnection))       //设置该Server的连接创建时Hook函数

@@ -7,17 +7,16 @@ import (
 	"go.uber.org/zap"
 )
 
-//ping test 自定义路由
+// PingRouter  自定义路由
 type PingRouter struct {
 	znet.BaseRouter
 }
 
-//Ping Handle
-func (this *PingRouter) Handle(request ziface.IRequest) {
+func (router *PingRouter) Handle(request ziface.IRequest) {
 
 	global.Glog.Debug("Call PingRouter Handle")
 	//先读取客户端的数据，再回写ping...ping...ping
-	global.Glog.Debug("recv from client : ", zap.Any("msgid", request.GetMsgID()),
+	global.Glog.Debug("received from client : ", zap.Any("msgID", request.GetMsgID()),
 		zap.Any("data", request.GetData()))
 
 	err := request.GetConnection().SendBinaryBuffMsg(0, []byte("ping...ping...ping"))

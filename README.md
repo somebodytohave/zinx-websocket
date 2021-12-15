@@ -1,7 +1,8 @@
 # 基于zinx二次开发为->(websocket版)
 
 - tcp协议改为websocket
-- 可单(1001)/主(1)子(1001)命令切换
+- 单/双命令配置 DoubleMsgID
+  - 单(1001)/主(1)子(1001)命令切换
 - 丰富的demo
 - 新增心跳检测功能
 - 若用到mysql需要安装驱动`gorm.io/driver/mysql`
@@ -12,6 +13,10 @@
 ### [protobuf-消息协议](https://github.com/sun-fight/zinx-websocket/tree/master/examples/protobuf)
 ### [doublemsgid-使用主子命令模式](https://github.com/sun-fight/zinx-websocket/tree/master/examples/doublemsgid)
 ### [database-支持mysql-redis](https://github.com/sun-fight/zinx-websocket/tree/master/examples/database)
+
+## todo
+- 心跳该为时间轮检测
+- gorm log
 
 
 ## 教程

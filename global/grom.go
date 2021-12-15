@@ -1,12 +1,12 @@
 package global
 
 import (
-	"github.com/sun-fight/zinx-websocket/global/internal"
 	"go.uber.org/zap"
+	"gorm.io/gorm/logger"
+	"moul.io/zapgorm2"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"os"
 )
@@ -19,9 +19,9 @@ import (
 
 //- 用到mysql需要安装驱动`gorm.io/driver/mysql`
 
-//只读数据库连接
+//InitGormReadMysql 只读数据库连接
 func InitGormReadMysql() *gorm.DB {
-	m := GlobalObject.MysqlReadConfig
+	m := Object.MysqlReadConfig
 	if m.Dbname == "" {
 		panic("数据库名字为空")
 		return nil
@@ -49,9 +49,9 @@ func InitGormReadMysql() *gorm.DB {
 	}
 }
 
-//可读写数据库连接
+// InitGormWriteMysql 可读写数据库连接
 func InitGormWriteMysql() *gorm.DB {
-	m := GlobalObject.MysqlWriteConfig
+	m := Object.MysqlWriteConfig
 	if m.Dbname == "" {
 		panic("数据库名字为空")
 		return nil
@@ -88,17 +88,22 @@ func InitGormWriteMysql() *gorm.DB {
 func gormConfig() *gorm.Config {
 	config := &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true,
 		NamingStrategy: schema.NamingStrategy{SingularTable: true}}
-	switch GlobalObject.MysqlReadConfig.LogMode {
+
+	zapLogger := zapgorm2.New(zap.L())
+	// optional: configure gorm to use this zapgorm.Logger for callbacks
+	zapLogger.SetAsDefault()
+	switch Object.MysqlReadConfig.LogMode {
 	case "silent", "Silent":
-		config.Logger = internal.Default.LogMode(logger.Silent)
+		zapLogger.LogLevel = logger.Silent
 	case "error", "Error":
-		config.Logger = internal.Default.LogMode(logger.Error)
+		zapLogger.LogLevel = logger.Error
 	case "warn", "Warn":
-		config.Logger = internal.Default.LogMode(logger.Warn)
+		zapLogger.LogLevel = logger.Warn
 	case "info", "Info":
-		config.Logger = internal.Default.LogMode(logger.Info)
+		zapLogger.LogLevel = logger.Error
 	default:
-		config.Logger = internal.Default.LogMode(logger.Info)
+		zapLogger.LogLevel = logger.Info
 	}
+	config.Logger = zapLogger
 	return config
 }

@@ -8,14 +8,14 @@ import (
 
 //定时检测心跳包
 func (c *Connection) heartBeatChecker() {
-	if global.GlobalObject.HeartbeatTime == 0 {
+	if global.Object.HeartbeatTime == 0 {
 		return
 	}
 	var (
 		timer *time.Timer
 	)
 
-	timer = time.NewTimer((global.GlobalObject.HeartbeatTime) * time.Second)
+	timer = time.NewTimer((global.Object.HeartbeatTime) * time.Second)
 
 	for {
 		select {
@@ -26,7 +26,7 @@ func (c *Connection) heartBeatChecker() {
 				fmt.Println("连接已关闭 或者 太久没有心跳")
 				return
 			}
-			timer.Reset(time.Duration(global.GlobalObject.HeartbeatTime) * time.Second)
+			timer.Reset(global.Object.HeartbeatTime * time.Second)
 		case <-c.ctx.Done():
 			timer.Stop()
 			fmt.Println("连接已关闭")
@@ -36,7 +36,7 @@ func (c *Connection) heartBeatChecker() {
 
 }
 
-//检测心跳
+//IsAlive 检测心跳
 func (c *Connection) IsAlive() bool {
 	var (
 		now = time.Now()
@@ -44,14 +44,14 @@ func (c *Connection) IsAlive() bool {
 	c.Lock()
 	defer c.Unlock()
 	if c.isClosed || now.Sub(c.lastHeartBeatTime) >
-		time.Duration(global.GlobalObject.HeartbeatTime)*time.Second {
+		global.Object.HeartbeatTime*time.Second {
 		return false
 	}
 	return true
 
 }
 
-//更新心跳
+//KeepAlive 更新心跳
 func (c *Connection) KeepAlive() {
 	var (
 		now = time.Now()

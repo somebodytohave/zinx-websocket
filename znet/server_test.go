@@ -83,7 +83,7 @@ type PingRouter struct {
 }
 
 //Test PreHandle
-func (this *PingRouter) PreHandle(request ziface.IRequest) {
+func (router *PingRouter) PreHandle(request ziface.IRequest) {
 	fmt.Println("Call Router PreHandle")
 	err := request.GetConnection().SendBinaryMsg(1, []byte("before ping ....\n"))
 	if err != nil {
@@ -92,7 +92,7 @@ func (this *PingRouter) PreHandle(request ziface.IRequest) {
 }
 
 //Test Handle
-func (this *PingRouter) Handle(request ziface.IRequest) {
+func (router *PingRouter) Handle(request ziface.IRequest) {
 	fmt.Println("Call PingRouter Handle")
 	//先读取客户端的数据，再回写ping...ping...ping
 	fmt.Println("recv from client : msgID=", request.GetMsgID(), ", data=", string(request.GetData()))
@@ -104,7 +104,7 @@ func (this *PingRouter) Handle(request ziface.IRequest) {
 }
 
 //Test PostHandle
-func (this *PingRouter) PostHandle(request ziface.IRequest) {
+func (router *PingRouter) PostHandle(request ziface.IRequest) {
 	fmt.Println("Call Router PostHandle")
 	err := request.GetConnection().SendBinaryMsg(1, []byte("After ping .....\n"))
 	if err != nil {
@@ -116,7 +116,7 @@ type HelloRouter struct {
 	BaseRouter
 }
 
-func (this *HelloRouter) Handle(request ziface.IRequest) {
+func (router *HelloRouter) Handle(request ziface.IRequest) {
 	fmt.Println("call helloRouter Handle")
 	fmt.Printf("receive from client msgID=%d, data=%s\n", request.GetMsgID(), string(request.GetData()))
 
@@ -156,7 +156,7 @@ func TestServer(t *testing.T) {
 	go ClientTest(2)
 
 	//2 开启服务
-	bindAddress := fmt.Sprintf("%s:%d", global.GlobalObject.Host, global.GlobalObject.TCPPort)
+	bindAddress := fmt.Sprintf("%s:%d", global.Object.Host, global.Object.TCPPort)
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.GET("/", s.Serve)

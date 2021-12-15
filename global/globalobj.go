@@ -1,3 +1,5 @@
+package global
+
 // Package utils 提供zinx相关工具类函数
 // 包括:
 //		全局配置
@@ -7,7 +9,6 @@
 // @Title  globalobj.go
 // @Description  相关配置文件定义及加载方式
 // @Author  Aceld - Thu Mar 11 10:32:29 CST 2019
-package global
 
 import (
 	"fmt"
@@ -58,7 +59,7 @@ var MysqlWrite *gorm.DB
 	存储一切有关Zinx框架的全局参数，供其他模块使用
 	一些参数也可以通过 用户根据 zinx.json来配置
 */
-type GlobalObj struct {
+type Obj struct {
 	/*
 		Server
 	*/
@@ -103,10 +104,8 @@ type GlobalObj struct {
 	RedisConfig RedisConfig
 }
 
-/*
-	定义一个全局的对象
-*/
-var GlobalObject *GlobalObj
+// Object 定义一个全局的对象
+var Object *Obj
 
 //PathExists 判断一个文件是否存在
 func PathExists(path string) (bool, error) {
@@ -121,7 +120,7 @@ func PathExists(path string) (bool, error) {
 }
 
 //Reload 读取用户的配置文件
-func (g *GlobalObj) Reload() {
+func (g *Obj) Reload() {
 	if confFileExists, _ := PathExists(g.ConfFilePath); confFileExists != true {
 		if Glog != nil {
 			Glog.Error("Config File " + g.ConfFilePath + " is not exist!!")
@@ -159,7 +158,7 @@ func init() {
 		pwd = "."
 	}
 	//初始化GlobalObject变量，设置一些默认值
-	GlobalObject = &GlobalObj{
+	Object = &Obj{
 		Name:             "ZinxServerApp",
 		Version:          "V0.11",
 		TCPPort:          8999,
@@ -189,5 +188,5 @@ func init() {
 	}
 
 	//NOTE: 从配置文件中加载一些用户配置的参数
-	GlobalObject.Reload()
+	Object.Reload()
 }
