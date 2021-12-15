@@ -71,17 +71,25 @@ func (c *Connection) StartWriter() {
 		select {
 		case msg := <-c.msgChan:
 			//读取超时
-			c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
+			err := c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
+			if err != nil {
+				fmt.Println("SetWriteDeadline error:, ", err, " Conn Writer exit")
+				return
+			}
 			//有数据要写给客户端
-			if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
+			if err = c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 				fmt.Println("Send Data error:, ", err, " Conn Writer exit")
 				return
 			}
 			c.KeepAlive()
-			//fmt.Printf("Send data succ! data = %+v\n", data)
+			//fmt.Printf("Send data success! data = %+v\n", data)
 		case msg, ok := <-c.msgBuffChan:
 			if ok {
-				c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
+				err := c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
+				if err != nil {
+					fmt.Println("SetWriteDeadline error:, ", err, " Conn Writer exit")
+					return
+				}
 				//有数据要写给客户端
 				if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 					fmt.Println("Send Data error:, ", err, " Conn Writer exit")
@@ -111,7 +119,11 @@ func (c *Connection) StartReader() {
 			return
 		default:
 			//超时时间
-			c.Conn.SetReadDeadline(time.Now().Add(global.Object.ConnReadTimeout * time.Second))
+			err := c.Conn.SetReadDeadline(time.Now().Add(global.Object.ConnReadTimeout * time.Second))
+			if err != nil {
+				fmt.Println("SetWriteDeadline error:, ", err, " Conn Writer exit")
+				return
+			}
 			msgType, ioReader, err := c.Conn.NextReader()
 			if err != nil {
 				fmt.Println("get read reader error ", err)
@@ -123,7 +135,7 @@ func (c *Connection) StartReader() {
 				fmt.Println("read msg head error ", err)
 				return
 			}
-			//拆包，得到msgID 和 datalen 放在msg中
+			//拆包，得到msgID 和 dataLen 放在msg中
 			msg, err := c.TCPServer.Packet().Unpack(headData)
 			if err != nil {
 				fmt.Println("unpack error ", err)
@@ -190,7 +202,10 @@ func (c *Connection) Stop() {
 	fmt.Println("Conn Stop()...ConnID = ", c.ConnID)
 
 	// 关闭socket链接
-	c.Conn.Close()
+	err := c.Conn.Close()
+	if err != nil {
+		fmt.Println("关闭socket链接", err)
+	}
 	//关闭Writer
 	c.cancel()
 

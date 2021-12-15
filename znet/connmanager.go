@@ -25,7 +25,7 @@ func NewConnManager() *ConnManager {
 func (connMgr *ConnManager) Add(conn ziface.IConnection) {
 
 	connMgr.connLock.Lock()
-	//将conn连接添加到ConnMananger中
+	//将conn连接添加到ConnManager中
 	connMgr.connections[conn.GetConnID()] = conn
 	connMgr.connLock.Unlock()
 

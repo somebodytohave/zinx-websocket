@@ -11,7 +11,7 @@ import (
 	"os"
 )
 
-//if GlobalObject.MysqlRead != nil {
+//if Object.MysqlRead != nil {
 //	// 程序结束前关闭数据库链接
 //	db, _ := MysqlRead.DB()
 //	defer db.Close()

@@ -10,10 +10,10 @@ type BaseRouter struct{}
 // 所以Router全部继承BaseRouter的好处是，不需要实现PreHandle和PostHandle也可以实例化
 
 //PreHandle -
-func (br *BaseRouter) PreHandle(req ziface.IRequest) {}
+func (br *BaseRouter) PreHandle(ziface.IRequest) {}
 
 //Handle -
-func (br *BaseRouter) Handle(req ziface.IRequest) {}
+func (br *BaseRouter) Handle(ziface.IRequest) {}
 
 //PostHandle -
-func (br *BaseRouter) PostHandle(req ziface.IRequest) {}
+func (br *BaseRouter) PostHandle(ziface.IRequest) {}

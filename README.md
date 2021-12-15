@@ -43,7 +43,7 @@ server := znet.NewServer()
 server.AddRouter(1, &api.PingRouter{})
 
 //3 开启服务
-bindAddress := fmt.Sprintf("%s:%d", global.GlobalObject.Host, global.GlobalObject.TCPPort)
+bindAddress := fmt.Sprintf("%s:%d", global.Object.Host, global.Object.TCPPort)
 router := gin.Default()
 router.GET("/", server.Serve)
 router.Run(bindAddress)

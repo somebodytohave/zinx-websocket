@@ -135,7 +135,7 @@ func DoConnectionBegin(conn ziface.IConnection) {
 }
 
 //连接断开的时候执行
-func DoConnectionLost(conn ziface.IConnection) {
+func DoConnectionLost(ziface.IConnection) {
 	fmt.Println("DoConnectionLost is Called ... ")
 }
 

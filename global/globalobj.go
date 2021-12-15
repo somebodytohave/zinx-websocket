@@ -157,7 +157,7 @@ func init() {
 	if err != nil {
 		pwd = "."
 	}
-	//初始化GlobalObject变量，设置一些默认值
+	//初始化Object变量，设置一些默认值
 	Object = &Obj{
 		Name:             "ZinxServerApp",
 		Version:          "V0.11",

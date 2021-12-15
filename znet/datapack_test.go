@@ -11,7 +11,7 @@ import (
 // run in terminal:
 // go test -v ./znet -run=TestDataPack
 
-//只是负责测试datapack拆包，封包功能
+//只是负责测试dataPack拆包，封包功能
 func TestDataPack(t *testing.T) {
 	//创建socket TCP Server
 	listener, err := net.Listen("tcp", "127.0.0.1:7777")
@@ -58,7 +58,7 @@ func TestDataPack(t *testing.T) {
 							return
 						}
 
-						fmt.Println("==> Recv Msg: ID=", msg.ID, ", len=", msg.DataLen, ", data=", string(msg.Data))
+						fmt.Println("==> received Msg: ID=", msg.ID, ", len=", msg.DataLen, ", data=", string(msg.Data))
 					}
 				}
 			}(conn)
@@ -104,7 +104,10 @@ func TestDataPack(t *testing.T) {
 		sendData1 = append(sendData1, sendData2...)
 
 		//向服务器端写数据
-		conn.Write(sendData1)
+		_, err = conn.Write(sendData1)
+		if err != nil {
+			fmt.Println("向服务器端写数据", err)
+		}
 	}()
 
 	//客户端阻塞

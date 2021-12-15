@@ -12,19 +12,6 @@ import (
 	"github.com/sun-fight/zinx-websocket/ziface"
 )
 
-var zinxLogo = `                                        
-              ██                        
-              ▀▀                        
- ████████   ████     ██▄████▄  ▀██  ██▀ 
-     ▄█▀      ██     ██▀   ██    ████   
-   ▄█▀        ██     ██    ██    ▄██▄   
- ▄██▄▄▄▄▄  ▄▄▄██▄▄▄  ██    ██   ▄█▀▀█▄  
- ▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀  ▀▀    ▀▀  ▀▀▀  ▀▀▀ 
-                                        `
-var topLine = `┌───────────────────────────────────────────────────┐`
-var borderLine = `│`
-var bottomLine = `└───────────────────────────────────────────────────┘`
-
 //Server 接口实现，定义一个Server服务类
 type Server struct {
 	//服务器的名称
@@ -100,7 +87,7 @@ func (s *Server) Start(c *gin.Context) {
 		//3 启动server网络连接业务
 		//3.2 设置服务器最大连接控制,如果超过最大连接，那么则关闭此新的连接
 		//todo 是否可以关闭此新的连接?
-		//if s.ConnMgr.Len() >= utils.GlobalObject.MaxConn {
+		//if s.ConnMgr.Len() >= utils.Object.MaxConn {
 		//	wsSocket.Close()
 		//	return
 		//}
