@@ -36,8 +36,10 @@ type Server struct {
 
 //NewServer 创建一个服务器句柄
 func NewServer(opts ...Option) ziface.IServer {
-	printLogo()
+	global.InitObject()
+	global.InitZap()
 
+	printLogo()
 	s := &Server{
 		Name:       global.Object.Name,
 		IPVersion:  "tcp4",
@@ -156,17 +158,18 @@ func (s *Server) Packet() ziface.Packet {
 	return s.packet
 }
 
+var topLine = `┌───────────────────────────────────────────────────┐`
+var borderLine = `│`
+var bottomLine = `└───────────────────────────────────────────────────┘`
+
 func printLogo() {
 	//fmt.Println(zinxLogo)
-	//fmt.Println(topLine)
-	//fmt.Println(fmt.Sprintf("%s [Github] https://github.com/aceld                 %s", borderLine, borderLine))
-	//fmt.Println(fmt.Sprintf("%s [tutorial] https://www.kancloud.cn/aceld/zinx     %s", borderLine, borderLine))
-	//fmt.Println(bottomLine)
+	fmt.Println(topLine)
+	fmt.Println(fmt.Sprintf("%s [Github] https://github.com/sun-fight/zinx-websocket                 %s", borderLine, borderLine))
+	fmt.Println(fmt.Sprintf("%s [tutorial] https://github.com/sun-fight/zinx-websocket/blob/master/README.md     %s", borderLine, borderLine))
+	fmt.Println(bottomLine)
 	fmt.Printf("[Zinx] Version: %s, MaxConn: %d, MaxPacketSize: %d\n",
 		global.Object.Version,
 		global.Object.MaxConn,
 		global.Object.MaxPacketSize)
-}
-
-func init() {
 }

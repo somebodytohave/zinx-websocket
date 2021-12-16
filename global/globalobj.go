@@ -149,10 +149,8 @@ func (g *Obj) Reload() {
 
 }
 
-/*
-	提供init方法，默认加载
-*/
-func init() {
+// InitObject 初始化全局配置
+func InitObject() {
 	pwd, err := os.Getwd()
 	if err != nil {
 		pwd = "."

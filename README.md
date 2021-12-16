@@ -35,7 +35,7 @@
 
 ```go
 func main() {
-//1 创建一个server句柄
+//1 创建一个server句柄,内含初始化 Glog...
 server := znet.NewServer()
 
 //2 配置路由
