@@ -9,7 +9,7 @@ import (
 	"github.com/sun-fight/zinx-websocket/ziface"
 )
 
-var defaultHeaderLen uint32 = 4
+var _defaultHeaderLen uint32 = 4
 
 //DataPack 封包拆包类实例，暂时不需要成员
 type DataPack struct{}
@@ -22,7 +22,7 @@ func NewDataPack() ziface.Packet {
 //GetHeadLen 获取包头长度方法
 func (dp *DataPack) GetHeadLen() uint32 {
 	//ID uint32(4字节) +  DataLen uint32(4字节)
-	return defaultHeaderLen
+	return _defaultHeaderLen
 }
 
 //Pack 封包方法(压缩数据)

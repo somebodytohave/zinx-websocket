@@ -23,6 +23,13 @@ import (
 	"github.com/sun-fight/zinx-websocket/ziface"
 )
 
+// Object 定义一个全局的对象
+var Object *Obj
+
+var Redis *redis.Client
+var MysqlRead *gorm.DB
+var MysqlWrite *gorm.DB
+
 type MysqlConfig struct {
 	Path         string //服务器地址:端口
 	Config       string // 高级配置
@@ -50,10 +57,6 @@ type ZapConfig struct {
 	StacktraceKey string `mapstructure:"stacktrace-key" json:"stacktraceKey" yaml:"stacktrace-key"` // 栈名
 	LogInConsole  bool   `mapstructure:"log-in-console" json:"logInConsole" yaml:"log-in-console"`  // 输出控制台
 }
-
-var Redis *redis.Client
-var MysqlRead *gorm.DB
-var MysqlWrite *gorm.DB
 
 /*
 	存储一切有关Zinx框架的全局参数，供其他模块使用
@@ -103,9 +106,6 @@ type Obj struct {
 	//redis
 	RedisConfig RedisConfig
 }
-
-// Object 定义一个全局的对象
-var Object *Obj
 
 //PathExists 判断一个文件是否存在
 func PathExists(path string) (bool, error) {

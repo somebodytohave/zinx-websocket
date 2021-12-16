@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var level zapcore.Level
+var _level zapcore.Level
 
 var Glog *zap.Logger
 
@@ -27,25 +27,25 @@ func InitZap() {
 
 	switch zapConfig.Level { // 初始化配置文件的Level
 	case "debug":
-		level = zap.DebugLevel
+		_level = zap.DebugLevel
 	case "info":
-		level = zap.InfoLevel
+		_level = zap.InfoLevel
 	case "warn":
-		level = zap.WarnLevel
+		_level = zap.WarnLevel
 	case "error":
-		level = zap.ErrorLevel
+		_level = zap.ErrorLevel
 	case "dpanic":
-		level = zap.DPanicLevel
+		_level = zap.DPanicLevel
 	case "panic":
-		level = zap.PanicLevel
+		_level = zap.PanicLevel
 	case "fatal":
-		level = zap.FatalLevel
+		_level = zap.FatalLevel
 	default:
-		level = zap.InfoLevel
+		_level = zap.InfoLevel
 	}
 
-	if level == zap.DebugLevel || level == zap.ErrorLevel {
-		Glog = zap.New(getEncoderCore(), zap.AddStacktrace(level))
+	if _level == zap.DebugLevel || _level == zap.ErrorLevel {
+		Glog = zap.New(getEncoderCore(), zap.AddStacktrace(_level))
 	} else {
 		Glog = zap.New(getEncoderCore())
 	}
@@ -111,7 +111,7 @@ func getEncoderCore() (core zapcore.Core) {
 		fmt.Printf("Get Write Syncer Failed err:%v", err.Error())
 		return
 	}
-	return zapcore.NewCore(getEncoder(), writer, level)
+	return zapcore.NewCore(getEncoder(), writer, _level)
 }
 
 // CustomTimeEncoder 自定义日志输出时间格式
