@@ -84,8 +84,8 @@ type Obj struct {
 	MaxWorkerTaskLen uint32        //业务工作Worker对应负责的任务队列最大任务存储数量
 	MaxMsgChanLen    uint32        //SendBuffMsg发送消息的缓冲最大长度
 	HeartbeatTime    time.Duration //心跳间隔默认60秒,0=永不超时
-	ConnReadTimeout  time.Duration //连接读取超时时间，0=永不超时,websocket连接状态已损坏且以后的所有读取都将返回错误。
-	ConnWriteTimeout time.Duration //连接读取超时时间，0=永不超时,websocket连接状态已损坏且以后的所有读取都将返回错误。
+	ConnReadTimeout  time.Duration //连接读超时，0=永不超时,读超时->websocket连接不可用且以后的所有读取都将返回错误。
+	ConnWriteTimeout time.Duration //连接写超时，0=永不超时,写超时->websocket连接不可用且以后的所有读取都将返回错误。
 
 	/*
 		config file path
@@ -170,8 +170,8 @@ func InitObject() {
 		MaxWorkerTaskLen: 1024,
 		MaxMsgChanLen:    1024,
 		HeartbeatTime:    60,
-		ConnReadTimeout:  60,
-		ConnWriteTimeout: 60,
+		ConnReadTimeout:  -1,
+		ConnWriteTimeout: -1,
 		ZapConfig: ZapConfig{
 			Level:         "info",
 			Format:        "console",
