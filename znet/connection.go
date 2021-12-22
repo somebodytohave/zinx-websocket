@@ -79,7 +79,7 @@ func (c *Connection) StartWriter() {
 				}
 			}
 			//有数据要写给客户端
-			if err = c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
+			if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 				fmt.Println("Send Data error:, ", err, " Conn Writer exit")
 				return
 			}
