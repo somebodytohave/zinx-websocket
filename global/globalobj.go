@@ -12,19 +12,20 @@ package global
 
 import (
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"os"
-	"time"
 
 	"github.com/sun-fight/zinx-websocket/ziface"
 )
 
 // Object 定义一个全局的对象
-var Object *Obj
+var Object *obj
 
 var Redis *redis.Client
 var MysqlRead *gorm.DB
@@ -46,6 +47,11 @@ type RedisConfig struct {
 	Addr     string // 服务器地址:端口
 	Password string // 密码
 }
+
+type EtcdConfig struct {
+	Endpoints []string
+}
+
 type ZapConfig struct {
 	Level         string `mapstructure:"level" json:"level" yaml:"level"`                           // 级别
 	Format        string `mapstructure:"format" json:"format" yaml:"format"`                        // 输出
@@ -62,10 +68,8 @@ type ZapConfig struct {
 	存储一切有关Zinx框架的全局参数，供其他模块使用
 	一些参数也可以通过 用户根据 zinx.json来配置
 */
-type Obj struct {
-	/*
-		Server
-	*/
+type obj struct {
+	// Server
 	TCPServer ziface.IServer //当前Zinx的全局Server对象
 	Host      string         //当前服务器主机IP
 	TCPPort   int            //当前服务器主机监听端口号
@@ -74,9 +78,7 @@ type Obj struct {
 	DoubleMsgID uint16 //(主子)双命令号模式(默认1单命令号模式)
 	Env         string // develop production
 
-	/*
-		Zinx
-	*/
+	// Zinx
 	Version          string        //当前Zinx版本号
 	MaxPacketSize    uint16        //读取数据包的最大值
 	MaxConn          int           //当前服务器主机允许的最大链接个数
@@ -87,19 +89,13 @@ type Obj struct {
 	ConnReadTimeout  time.Duration //连接读超时，0=永不超时,读超时->websocket连接不可用且以后的所有读取都将返回错误。
 	ConnWriteTimeout time.Duration //连接写超时，0=永不超时,写超时->websocket连接不可用且以后的所有读取都将返回错误。
 
-	/*
-		config file path
-	*/
+	// config file path
 	ConfFilePath string
-
-	/*
-		zap
-	*/
+	// zap
 	ZapConfig ZapConfig
-
-	/*
-		数据库
-	*/
+	// etcd
+	EtcdConfig EtcdConfig
+	// 数据库
 	MysqlReadConfig MysqlConfig
 	//可写操作数据库连接
 	MysqlWriteConfig MysqlConfig
@@ -120,7 +116,7 @@ func PathExists(path string) (bool, error) {
 }
 
 //Reload 读取用户的配置文件
-func (g *Obj) Reload() {
+func (g *obj) Reload() {
 	if confFileExists, _ := PathExists(g.ConfFilePath); confFileExists != true {
 		if Glog != nil {
 			Glog.Error("Config File " + g.ConfFilePath + " is not exist!!")
@@ -156,7 +152,7 @@ func InitObject() {
 		pwd = "."
 	}
 	//初始化Object变量，设置一些默认值
-	Object = &Obj{
+	Object = &obj{
 		Name:             "ZinxServerApp",
 		Version:          "V0.11",
 		TCPPort:          8999,
@@ -172,6 +168,7 @@ func InitObject() {
 		HeartbeatTime:    60,
 		ConnReadTimeout:  -1,
 		ConnWriteTimeout: -1,
+		EtcdConfig:       EtcdConfig{},
 		ZapConfig: ZapConfig{
 			Level:         "info",
 			Format:        "console",
