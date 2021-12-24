@@ -12,7 +12,9 @@ package global
 
 import (
 	"fmt"
+	"github.com/sun-fight/zinx-websocket/zutil/zip"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
@@ -48,8 +50,13 @@ type RedisConfig struct {
 	Password string // 密码
 }
 
-type EtcdConfig struct {
-	Endpoints []string
+type EtcdServerConfig struct {
+	Endpoints      []string
+	LocalHost      string //本机内网IP
+	RPCPort        string //RPC端口
+	ServerList     map[string]string
+	ServerPrefix   string
+	ServerListLock sync.RWMutex
 }
 
 type ZapConfig struct {
@@ -64,6 +71,11 @@ type ZapConfig struct {
 	LogInConsole  bool   `mapstructure:"log-in-console" json:"logInConsole" yaml:"log-in-console"`  // 输出控制台
 }
 
+const (
+	ServerTypeGate   = "gate"
+	ServerTypeServer = "server"
+)
+
 /*
 	存储一切有关Zinx框架的全局参数，供其他模块使用
 	一些参数也可以通过 用户根据 zinx.json来配置
@@ -77,6 +89,7 @@ type obj struct {
 	// 详见[doublemsgid](https://github.com/sun-fight/zinx-websocket/tree/master/examples/doublemsgid)案例
 	DoubleMsgID uint16 //(主子)双命令号模式(默认1单命令号模式)
 	Env         string // develop production
+	ServerType  string //gate server
 
 	// Zinx
 	Version          string        //当前Zinx版本号
@@ -94,7 +107,7 @@ type obj struct {
 	// zap
 	ZapConfig ZapConfig
 	// etcd
-	EtcdConfig EtcdConfig
+	EtcdServerConfig EtcdServerConfig
 	// 数据库
 	MysqlReadConfig MysqlConfig
 	//可写操作数据库连接
@@ -142,7 +155,12 @@ func (g *obj) Reload() {
 	if err := v.Unmarshal(&g); err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
-
+	switch g.ServerType {
+	case ServerTypeGate:
+	case ServerTypeServer:
+	default:
+		panic("ServerType必须配置`gate`or`server`")
+	}
 }
 
 // InitObject 初始化全局配置
@@ -150,6 +168,10 @@ func InitObject() {
 	pwd, err := os.Getwd()
 	if err != nil {
 		pwd = "."
+	}
+	intranetIp, err := zip.GetIntranetIp()
+	if err != nil {
+		fmt.Println(err)
 	}
 	//初始化Object变量，设置一些默认值
 	Object = &obj{
@@ -168,7 +190,12 @@ func InitObject() {
 		HeartbeatTime:    60,
 		ConnReadTimeout:  -1,
 		ConnWriteTimeout: -1,
-		EtcdConfig:       EtcdConfig{},
+		EtcdServerConfig: EtcdServerConfig{
+			ServerList:   make(map[string]string),
+			LocalHost:    intranetIp,
+			ServerPrefix: "/ServerPrefix/",
+			RPCPort:      "8000",
+		},
 		ZapConfig: ZapConfig{
 			Level:         "info",
 			Format:        "console",

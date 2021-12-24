@@ -2,9 +2,10 @@ package etcd
 
 import (
 	"context"
-	clientv3 "go.etcd.io/etcd/client/v3"
-	"log"
-
+	"github.com/sun-fight/zinx-websocket/global"
+	"go.etcd.io/etcd/api/v3/mvccpb"
+	"go.etcd.io/etcd/client/v3"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -17,6 +18,7 @@ func NewClientDis(addr []string) (*ClientDis, error) {
 		Endpoints:   addr,
 		DialTimeout: 5 * time.Second,
 	}
+
 	if client, err := clientv3.New(conf); err == nil {
 		return &ClientDis{
 			client: client,
@@ -31,7 +33,8 @@ func (this *ClientDis) GetService(prefix string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	addrs := this.extractAddrs(resp)
+
+	addrs := this.extractAddr(resp)
 
 	go this.watcher(prefix)
 	return addrs, nil
@@ -51,30 +54,28 @@ func (this *ClientDis) watcher(prefix string) {
 	}
 }
 
-func (this *ClientDis) extractAddrs(resp *clientv3.GetResponse) []string {
+func (this *ClientDis) extractAddr(resp *clientv3.GetResponse) []string {
 	addrs := make([]string, 0)
-	if resp == nil || resp == nil {
+	if resp == nil || resp.Kvs == nil {
 		return addrs
 	}
-	for i := range resp.Kvs {
-		if v := resp.Kvs[i].Value; v != nil {
-			this.SetServiceList(string(resp.Kvs[i].Key), string(resp.Kvs[i].Value))
-			addrs = append(addrs, string(v))
-		}
+	for _, v := range resp.Kvs {
+		this.SetServiceList(string(v.Key), string(v.Value))
+		addrs = append(addrs, string(v.Value))
 	}
 	return addrs
 }
 
 func (this *ClientDis) SetServiceList(key, val string) {
-	setting.GlobalSetting.ServerListLock.Lock()
-	defer setting.GlobalSetting.ServerListLock.Unlock()
-	setting.GlobalSetting.ServerList[key] = val
-	log.Info("发现服务：", key, " 地址:", val)
+	global.Object.EtcdServerConfig.ServerListLock.Lock()
+	defer global.Object.EtcdServerConfig.ServerListLock.Unlock()
+	global.Object.EtcdServerConfig.ServerList[key] = val
+	global.Glog.Info("发现服务：", zap.String("key", key), zap.String(" 地址:", val))
 }
 
 func (this *ClientDis) DelServiceList(key string) {
-	setting.GlobalSetting.ServerListLock.Lock()
-	defer setting.GlobalSetting.ServerListLock.Unlock()
-	delete(setting.GlobalSetting.ServerList, key)
-	log.Println("服务下线:", key)
+	global.Object.EtcdServerConfig.ServerListLock.Lock()
+	defer global.Object.EtcdServerConfig.ServerListLock.Unlock()
+	delete(global.Object.EtcdServerConfig.ServerList, key)
+	global.Glog.Info("服务下线:", zap.String("key", key))
 }

@@ -2,11 +2,9 @@ package etcd
 
 import (
 	"context"
-
+	"github.com/sun-fight/zinx-websocket/global"
+	"go.etcd.io/etcd/client/v3"
 	"time"
-
-	"github.com/coreos/etcd/clientv3"
-	log "github.com/sirupsen/logrus"
 )
 
 //注册租约服务
@@ -18,7 +16,7 @@ type ServiceReg struct {
 	keepAliveChan <-chan *clientv3.LeaseKeepAliveResponse
 }
 
-func NewServiceReg(addr []string, timeNum int64) (*ServiceReg, error) {
+func NewServiceReg(addr []string, timeNum time.Duration) (*ServiceReg, error) {
 	var (
 		err    error
 		client *clientv3.Client
@@ -43,11 +41,12 @@ func NewServiceReg(addr []string, timeNum int64) (*ServiceReg, error) {
 }
 
 //设置租约
-func (this *ServiceReg) setLease(timeNum int64) error {
+func (this *ServiceReg) setLease(timeNum time.Duration) error {
 	lease := clientv3.NewLease(this.client)
 
 	ctx, cancel := context.WithTimeout(context.TODO(), 2*time.Second)
-	leaseResp, err := lease.Grant(ctx, timeNum)
+	defer cancel()
+	leaseResp, err := lease.Grant(ctx, int64(timeNum.Seconds()))
 	if err != nil {
 		cancel()
 		return err
@@ -55,7 +54,6 @@ func (this *ServiceReg) setLease(timeNum int64) error {
 
 	ctx, cancelFunc := context.WithCancel(context.TODO())
 	leaseRespChan, err := lease.KeepAlive(ctx, leaseResp.ID)
-
 	if err != nil {
 		return err
 	}
@@ -73,10 +71,10 @@ func (this *ServiceReg) ListenLeaseRespChan() {
 		select {
 		case leaseKeepResp := <-this.keepAliveChan:
 			if leaseKeepResp == nil {
-				log.Error("已经关闭续租功能")
+				global.Glog.Error("已经关闭续租功能")
 				return
 			} else {
-				//log.Info("续租成功")
+				global.Glog.Info("续租成功")
 			}
 		}
 	}

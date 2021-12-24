@@ -14,10 +14,11 @@ var mu sync.Mutex
 
 func GetInstance() *clientv3.Client {
 	if etcdKvClient == nil {
-		if client, err := clientv3.New(clientv3.Config{
-			Endpoints:   global.Object.EtcdConfig.Endpoints,
+		config := clientv3.Config{
+			Endpoints:   global.Object.EtcdServerConfig.Endpoints,
 			DialTimeout: 5 * time.Second,
-		}); err != nil {
+		}
+		if client, err := clientv3.New(config); err != nil {
 			global.Glog.Error("etcd", zap.Error(err))
 			return nil
 		} else {
