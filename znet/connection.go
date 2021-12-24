@@ -71,12 +71,6 @@ func (c *Connection) StartWriter() {
 	for {
 		select {
 		case msg := <-c.msgChan:
-			//读取超时
-			// err := c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
-			// if err != nil {
-			// 	fmt.Println("SetWriteDeadline error:, ", err, " Conn Writer exit")
-			// 	return
-			// }
 			//有数据要写给客户端
 			if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 				fmt.Println("Send Data error:, ", err, " Conn Writer exit")
@@ -86,11 +80,6 @@ func (c *Connection) StartWriter() {
 			//fmt.Printf("Send data success! data = %+v\n", data)
 		case msg, ok := <-c.msgBuffChan:
 			if ok {
-				// err := c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
-				// if err != nil {
-				// 	fmt.Println("SetWriteDeadline error:, ", err, " Conn Writer exit")
-				// 	return
-				// }
 				//有数据要写给客户端
 				if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 					fmt.Println("Send Data error:, ", err, " Conn Writer exit")
@@ -119,12 +108,6 @@ func (c *Connection) StartReader() {
 		case <-c.ctx.Done():
 			return
 		default:
-			//超时时间
-			// err := c.Conn.SetReadDeadline(time.Now().Add(global.Object.ConnReadTimeout * time.Second))
-			// if err != nil {
-			// 	fmt.Println("SetReadDeadline error:, ", err, " Conn Writer exit")
-			// 	return
-			// }
 			msgType, ioReader, err := c.Conn.NextReader()
 			if err != nil {
 				fmt.Println("get read reader error ", err)

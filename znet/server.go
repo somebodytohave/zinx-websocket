@@ -2,12 +2,13 @@ package znet
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
-	"github.com/sun-fight/zinx-websocket/global"
 	"net/http"
 	"sync/atomic"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
+	"github.com/sun-fight/zinx-websocket/global"
 
 	"github.com/sun-fight/zinx-websocket/ziface"
 )
@@ -61,7 +62,6 @@ func NewServer(opts ...Option) ziface.IServer {
 
 //Start 开启网络服务
 func (s *Server) Start(c *gin.Context) {
-	fmt.Printf("[START] Server name: %s,listenner at IP: %s, Port %d is starting\n", s.Name, s.IP, s.Port)
 
 	//开启一个go去做服务端Linster业务
 	go func() {

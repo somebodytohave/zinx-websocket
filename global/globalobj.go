@@ -25,13 +25,13 @@ import (
 )
 
 // Object 定义一个全局的对象
-var Object *Obj
+var Object *obj
 
 var Redis *redis.Client
 var MysqlRead *gorm.DB
 var MysqlWrite *gorm.DB
 
-type MysqlConfig struct {
+type mysqlConfig struct {
 	Path         string //服务器地址:端口
 	Config       string // 高级配置
 	Dbname       string // 数据库名
@@ -42,12 +42,13 @@ type MysqlConfig struct {
 	LogMode      string // 日志模式
 }
 
-type RedisConfig struct {
+type redisConfig struct {
 	DB       int    // redis的哪个数据库
 	Addr     string // 服务器地址:端口
 	Password string // 密码
 }
-type ZapConfig struct {
+
+type zapConfig struct {
 	Level         string `mapstructure:"level" json:"level" yaml:"level"`                           // 级别
 	Format        string `mapstructure:"format" json:"format" yaml:"format"`                        // 输出
 	Prefix        string `mapstructure:"prefix" json:"prefix" yaml:"prefix"`                        // 日志前缀
@@ -63,7 +64,7 @@ type ZapConfig struct {
 	存储一切有关Zinx框架的全局参数，供其他模块使用
 	一些参数也可以通过 用户根据 zinx.json来配置
 */
-type Obj struct {
+type obj struct {
 	/*
 		Server
 	*/
@@ -85,8 +86,6 @@ type Obj struct {
 	MaxWorkerTaskLen uint32        //业务工作Worker对应负责的任务队列最大任务存储数量
 	MaxMsgChanLen    uint32        //SendBuffMsg发送消息的缓冲最大长度
 	HeartbeatTime    time.Duration //心跳间隔默认60秒,0=永不超时
-	ConnReadTimeout  time.Duration //连接读超时，0=永不超时,读超时->websocket连接不可用且以后的所有读取都将返回错误。
-	ConnWriteTimeout time.Duration //连接写超时，0=永不超时,写超时->websocket连接不可用且以后的所有读取都将返回错误。
 
 	/*
 		config file path
@@ -96,16 +95,16 @@ type Obj struct {
 	/*
 		zap
 	*/
-	ZapConfig ZapConfig
+	ZapConfig zapConfig
 
 	/*
 		数据库
 	*/
-	MysqlReadConfig MysqlConfig
+	MysqlReadConfig mysqlConfig
 	//可写操作数据库连接
-	MysqlWriteConfig MysqlConfig
+	MysqlWriteConfig mysqlConfig
 	//redis
-	RedisConfig RedisConfig
+	RedisConfig redisConfig
 }
 
 //PathExists 判断一个文件是否存在
@@ -121,7 +120,7 @@ func PathExists(path string) (bool, error) {
 }
 
 //Reload 读取用户的配置文件
-func (g *Obj) Reload() {
+func (g *obj) Reload() {
 	if confFileExists, _ := PathExists(g.ConfFilePath); confFileExists != true {
 		if Glog != nil {
 			Glog.Error("Config File " + g.ConfFilePath + " is not exist!!")
@@ -157,7 +156,7 @@ func InitObject() {
 		pwd = "."
 	}
 	//初始化Object变量，设置一些默认值
-	Object = &Obj{
+	Object = &obj{
 		Name:             "ZinxServerApp",
 		Version:          "V0.11",
 		TCPPort:          8999,
@@ -171,9 +170,7 @@ func InitObject() {
 		MaxWorkerTaskLen: 1024,
 		MaxMsgChanLen:    1024,
 		HeartbeatTime:    60,
-		ConnReadTimeout:  60,
-		ConnWriteTimeout: 60,
-		ZapConfig: ZapConfig{
+		ZapConfig: zapConfig{
 			Level:         "info",
 			Format:        "console",
 			Prefix:        "[zinx-websocket]",
