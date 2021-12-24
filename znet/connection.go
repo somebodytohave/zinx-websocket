@@ -4,12 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/gorilla/websocket"
-	"github.com/sun-fight/zinx-websocket/global"
 	"io"
 	"net"
 	"sync"
 	"time"
+
+	"github.com/gorilla/websocket"
+	"github.com/sun-fight/zinx-websocket/global"
 
 	"github.com/sun-fight/zinx-websocket/ziface"
 )
@@ -71,13 +72,11 @@ func (c *Connection) StartWriter() {
 		select {
 		case msg := <-c.msgChan:
 			//读取超时
-			if global.Object.ConnWriteTimeout >= 0 {
-				err := c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
-				if err != nil {
-					fmt.Println("SetWriteDeadline error:, ", err, " Conn Writer exit")
-					return
-				}
-			}
+			// err := c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
+			// if err != nil {
+			// 	fmt.Println("SetWriteDeadline error:, ", err, " Conn Writer exit")
+			// 	return
+			// }
 			//有数据要写给客户端
 			if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 				fmt.Println("Send Data error:, ", err, " Conn Writer exit")
@@ -87,14 +86,11 @@ func (c *Connection) StartWriter() {
 			//fmt.Printf("Send data success! data = %+v\n", data)
 		case msg, ok := <-c.msgBuffChan:
 			if ok {
-				if global.Object.ConnWriteTimeout >= 0 {
-					err := c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
-					if err != nil {
-						fmt.Println("SetWriteDeadline error:, ", err, " Conn Writer exit")
-						return
-					}
-				}
-
+				// err := c.Conn.SetWriteDeadline(time.Now().Add(global.Object.ConnWriteTimeout * time.Second))
+				// if err != nil {
+				// 	fmt.Println("SetWriteDeadline error:, ", err, " Conn Writer exit")
+				// 	return
+				// }
 				//有数据要写给客户端
 				if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
 					fmt.Println("Send Data error:, ", err, " Conn Writer exit")
@@ -124,13 +120,11 @@ func (c *Connection) StartReader() {
 			return
 		default:
 			//超时时间
-			if global.Object.ConnReadTimeout >= 0 {
-				err := c.Conn.SetReadDeadline(time.Now().Add(global.Object.ConnReadTimeout * time.Second))
-				if err != nil {
-					fmt.Println("SetReadDeadline error:, ", err, " Conn Writer exit")
-					return
-				}
-			}
+			// err := c.Conn.SetReadDeadline(time.Now().Add(global.Object.ConnReadTimeout * time.Second))
+			// if err != nil {
+			// 	fmt.Println("SetReadDeadline error:, ", err, " Conn Writer exit")
+			// 	return
+			// }
 			msgType, ioReader, err := c.Conn.NextReader()
 			if err != nil {
 				fmt.Println("get read reader error ", err)

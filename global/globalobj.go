@@ -12,13 +12,14 @@ package global
 
 import (
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"os"
-	"time"
 
 	"github.com/sun-fight/zinx-websocket/ziface"
 )
@@ -170,8 +171,8 @@ func InitObject() {
 		MaxWorkerTaskLen: 1024,
 		MaxMsgChanLen:    1024,
 		HeartbeatTime:    60,
-		ConnReadTimeout:  -1,
-		ConnWriteTimeout: -1,
+		ConnReadTimeout:  60,
+		ConnWriteTimeout: 60,
 		ZapConfig: ZapConfig{
 			Level:         "info",
 			Format:        "console",
