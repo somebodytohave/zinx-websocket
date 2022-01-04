@@ -1,12 +1,11 @@
 package global
 
 import (
+	"github.com/sun-fight/zinx-websocket/zutil/mzap"
 	"go.uber.org/zap"
-	"gorm.io/gorm/logger"
-	"moul.io/zapgorm2"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"os"
 )
@@ -89,9 +88,12 @@ func gormConfig() *gorm.Config {
 	config := &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true,
 		NamingStrategy: schema.NamingStrategy{SingularTable: true}}
 
-	zapLogger := zapgorm2.New(zap.L())
+	if Glog == nil {
+		panic("日志库未初始化")
+	}
+	zapLogger := mzap.New(Glog)
 	// optional: configure gorm to use this zapgorm.Logger for callbacks
-	zapLogger.SetAsDefault()
+	//zapLogger.SetAsDefault()
 	switch Object.MysqlReadConfig.LogMode {
 	case "silent", "Silent":
 		zapLogger.LogLevel = logger.Silent
