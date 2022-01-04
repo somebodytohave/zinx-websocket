@@ -92,7 +92,7 @@ func gormConfig() *gorm.Config {
 		panic("日志库未初始化")
 	}
 	//zapLogger := zapgorm2.New(zap.L())
-	zapLogger := zzap.New(Glog)
+	zapLogger := zzap.New(Glog.Named("sql"))
 	// optional: configure gorm to use this zapgorm.Logger for callbacks
 	//zapLogger.SetAsDefault()
 	switch Object.MysqlReadConfig.LogMode {
