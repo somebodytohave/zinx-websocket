@@ -85,7 +85,7 @@ func (l Logger) Trace(ctx context.Context, begin time.Time, fc func() (string, i
 
 var (
 	gormPackage    = filepath.Join("gorm.io", "gorm")
-	zapgormPackage = filepath.Join("moul.io", "zapgorm2")
+	zapgormPackage = filepath.Join("zutil", "zzap")
 )
 
 func (l Logger) logger() *zap.Logger {
