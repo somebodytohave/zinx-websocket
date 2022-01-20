@@ -1,0 +1,8 @@
+Name: 'zinx-websocket Demo'
+Host: "127.0.0.1"
+TcpPort: 8999
+DoubleMsgID: 1000
+MaxConn: 3
+WorkerPoolSize: 10
+LogDir: "./mylog"
+HeartbeatTime: 60
