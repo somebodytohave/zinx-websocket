@@ -122,9 +122,7 @@ func PathExists(path string) (bool, error) {
 //Reload 读取用户的配置文件
 func (g *obj) Reload() {
 	if confFileExists, _ := PathExists(g.ConfFilePath); confFileExists != true {
-		if Glog != nil {
-			Glog.Error("Config File " + g.ConfFilePath + " is not exist!!")
-		}
+		fmt.Println("Config File " + g.ConfFilePath + " is not exist!!")
 		return
 	}
 
