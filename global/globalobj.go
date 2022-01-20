@@ -130,7 +130,6 @@ func (g *obj) Reload() {
 
 	v := viper.New()
 	v.SetConfigFile(g.ConfFilePath)
-	v.SetConfigType("json")
 	err := v.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
@@ -165,7 +164,7 @@ func InitObject() {
 		DoubleMsgID:      1,
 		MaxConn:          12000,
 		MaxPacketSize:    4096,
-		ConfFilePath:     pwd + "/conf/zinx.json",
+		ConfFilePath:     pwd + "/conf/zinx.yaml",
 		WorkerPoolSize:   10,
 		MaxWorkerTaskLen: 1024,
 		MaxMsgChanLen:    1024,
