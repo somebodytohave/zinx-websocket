@@ -3,13 +3,14 @@ package zzap
 import (
 	"context"
 	"errors"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
-	gormlogger "gorm.io/gorm/logger"
 	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
+
+	"go.uber.org/zap"
+	"gorm.io/gorm"
+	gormlogger "gorm.io/gorm/logger"
 )
 
 type Logger struct {
@@ -71,9 +72,15 @@ func (l Logger) Trace(ctx context.Context, begin time.Time, fc func() (string, i
 	}
 	elapsed := time.Since(begin)
 	switch {
-	case err != nil && l.LogLevel >= gormlogger.Error && (!l.IgnoreRecordNotFoundError || !errors.Is(err, gorm.ErrRecordNotFound)):
+	case err != nil && l.LogLevel >= gormlogger.Error:
 		sql, rows := fc()
-		l.logger().Error("", zap.Error(err), zap.Duration("elapsed", elapsed), zap.Int64("rows", rows), zap.String("sql", sql))
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			if !l.IgnoreRecordNotFoundError {
+				l.logger().Warn("", zap.Duration("elapsed", elapsed), zap.Int64("rows", rows), zap.String("sql", sql))
+			}
+		} else {
+			l.logger().Error("", zap.Error(err), zap.Duration("elapsed", elapsed), zap.Int64("rows", rows), zap.String("sql", sql))
+		}
 	case l.SlowThreshold != 0 && elapsed > l.SlowThreshold && l.LogLevel >= gormlogger.Warn:
 		sql, rows := fc()
 		l.logger().Warn("", zap.Duration("elapsed", elapsed), zap.Int64("rows", rows), zap.String("sql", sql))

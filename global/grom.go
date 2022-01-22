@@ -1,13 +1,14 @@
 package global
 
 import (
+	"os"
+
 	"github.com/sun-fight/zinx-websocket/zutil/zzap"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"os"
 )
 
 //if Object.MysqlRead != nil {
@@ -22,8 +23,7 @@ import (
 func InitGormReadMysql() *gorm.DB {
 	m := Object.MysqlReadConfig
 	if m.Dbname == "" {
-		panic("数据库名字为空")
-		return nil
+		panic("sql name is empty")
 	}
 	dsn := m.Username + ":" + m.Password + "@tcp(" + m.Path + ")/" + m.Dbname + "?" + m.Config
 	mysqlConfig := mysql.Config{
@@ -52,8 +52,7 @@ func InitGormReadMysql() *gorm.DB {
 func InitGormWriteMysql() *gorm.DB {
 	m := Object.MysqlWriteConfig
 	if m.Dbname == "" {
-		panic("数据库名字为空")
-		return nil
+		panic("sql name is empty")
 	}
 	dsn := m.Username + ":" + m.Password + "@tcp(" + m.Path + ")/" + m.Dbname + "?" + m.Config
 	mysqlConfig := mysql.Config{
