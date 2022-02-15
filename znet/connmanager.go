@@ -29,7 +29,8 @@ func (connMgr *ConnManager) Add(conn ziface.IConnection) {
 	connMgr.connections[conn.GetConnID()] = conn
 	connMgr.connLock.Unlock()
 
-	fmt.Println("connection add to ConnManager successfully: conn num = ", connMgr.Len())
+	fmt.Println("connection add to ConnManager successfully:",
+		"connID= ", conn.GetConnID(), " conn num = ", connMgr.Len())
 }
 
 //Remove 删除连接
