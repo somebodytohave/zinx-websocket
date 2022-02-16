@@ -34,7 +34,7 @@ func (mh *MsgHandle) SendMsgToTaskQueue(request ziface.IRequest) {
 	//轮询的平均分配法则
 
 	//得到需要处理此条连接的workerID
-	workerID := request.GetConnection().GetConnID() % (mh.WorkerPoolSize)
+	workerID := request.GetConnection().GetConnID() % int64(mh.WorkerPoolSize)
 	//fmt.Println("Add ConnID=", request.GetConnection().GetConnID()," request msgID=", request.GetMsgID(), "to workerID=", workerID)
 	//将请求消息发送给任务队列
 	mh.TaskQueue[workerID] <- request

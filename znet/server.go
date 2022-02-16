@@ -2,13 +2,12 @@ package znet
 
 import (
 	"fmt"
-	"net/http"
-	"sync/atomic"
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/sun-fight/zinx-websocket/global"
+	"github.com/sun-fight/zinx-websocket/zutil/zuid"
+	"go.uber.org/zap"
+	"net/http"
 
 	"github.com/sun-fight/zinx-websocket/ziface"
 )
@@ -39,6 +38,7 @@ type Server struct {
 func NewServer(opts ...Option) ziface.IServer {
 	global.InitObject()
 	global.InitZap()
+	zuid.Init()
 
 	printLogo()
 	s := &Server{
@@ -65,12 +65,6 @@ func (s *Server) Start(c *gin.Context) {
 
 	//开启一个go去做服务端Linster业务
 	go func() {
-
-		//TODO server.go 应该有一个自动生成ID的方法
-		//var cID uint32
-		//cID = 0
-		curConnId := uint32(time.Now().Unix())
-		cID := atomic.AddUint32(&curConnId, 1)
 		var (
 			err        error
 			wsSocket   *websocket.Conn
@@ -82,7 +76,7 @@ func (s *Server) Start(c *gin.Context) {
 			}
 		)
 		if wsSocket, err = wsUpgrader.Upgrade(c.Writer, c.Request, nil); err != nil {
-			fmt.Println("将HTTP服务器连接升级到WebSocket协议失败 ", err)
+			global.Glog.Error("将HTTP服务器连接升级到WebSocket协议失败 ", zap.Error(err))
 			return
 		}
 
@@ -94,7 +88,7 @@ func (s *Server) Start(c *gin.Context) {
 		//	return
 		//}
 		//3.3 处理该新连接请求的 业务 方法， 此时应该有 handler 和 conn是绑定的
-		dealConn := NewConnection(s, wsSocket, cID, s.msgHandler)
+		dealConn := NewConnection(s, wsSocket, zuid.Gen64(), s.msgHandler)
 		//3.4 启动当前链接的处理业务
 		go dealConn.Start()
 	}()
@@ -141,7 +135,7 @@ func (s *Server) SetOnConnStop(hookFunc func(ziface.IConnection)) {
 //CallOnConnStart 调用连接OnConnStart Hook函数
 func (s *Server) CallOnConnStart(conn ziface.IConnection) {
 	if s.OnConnStart != nil {
-		fmt.Println("---> CallOnConnStart....")
+		//fmt.Println("---> CallOnConnStart....")
 		s.OnConnStart(conn)
 	}
 }
@@ -149,7 +143,7 @@ func (s *Server) CallOnConnStart(conn ziface.IConnection) {
 //CallOnConnStop 调用连接OnConnStop Hook函数
 func (s *Server) CallOnConnStop(conn ziface.IConnection) {
 	if s.OnConnStop != nil {
-		fmt.Println("---> CallOnConnStop....")
+		//fmt.Println("---> CallOnConnStop....")
 		s.OnConnStop(conn)
 	}
 }

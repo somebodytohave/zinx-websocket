@@ -44,7 +44,7 @@ func InitZap() {
 		_level = zap.InfoLevel
 	}
 
-	if _level == zap.DebugLevel || _level == zap.ErrorLevel {
+	if _level == zap.DebugLevel || _level >= zap.WarnLevel {
 		Glog = zap.New(getEncoderCore(), zap.AddStacktrace(_level))
 	} else {
 		Glog = zap.New(getEncoderCore())

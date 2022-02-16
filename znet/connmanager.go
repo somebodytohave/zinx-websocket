@@ -3,6 +3,8 @@ package znet
 import (
 	"errors"
 	"fmt"
+	"github.com/sun-fight/zinx-websocket/global"
+	"go.uber.org/zap"
 	"sync"
 
 	"github.com/sun-fight/zinx-websocket/ziface"
@@ -10,41 +12,39 @@ import (
 
 //ConnManager 连接管理模块
 type ConnManager struct {
-	connections map[uint32]ziface.IConnection
+	connections map[int64]ziface.IConnection
 	connLock    sync.RWMutex
 }
 
 //NewConnManager 创建一个链接管理
 func NewConnManager() *ConnManager {
 	return &ConnManager{
-		connections: make(map[uint32]ziface.IConnection),
+		connections: make(map[int64]ziface.IConnection),
 	}
 }
 
 //Add 添加链接
 func (connMgr *ConnManager) Add(conn ziface.IConnection) {
-
 	connMgr.connLock.Lock()
 	//将conn连接添加到ConnManager中
 	connMgr.connections[conn.GetConnID()] = conn
 	connMgr.connLock.Unlock()
 
-	fmt.Println("connection add to ConnManager successfully:",
-		"connID= ", conn.GetConnID(), " conn num = ", connMgr.Len())
+	global.Glog.Info("connection add to ConnManager successfully:",
+		zap.Int64("connID= ", conn.GetConnID()), zap.Int(" conn num = ", connMgr.Len()))
 }
 
 //Remove 删除连接
 func (connMgr *ConnManager) Remove(conn ziface.IConnection) {
-
 	connMgr.connLock.Lock()
 	//删除连接信息
 	delete(connMgr.connections, conn.GetConnID())
 	connMgr.connLock.Unlock()
-	fmt.Println("connection Remove ConnID=", conn.GetConnID(), " successfully: conn num = ", connMgr.Len())
+	global.Glog.Info("connection Remove ", zap.Int64("ConnID=", conn.GetConnID()), zap.Int("successfully: conn num = ", connMgr.Len()))
 }
 
 //Get 利用ConnID获取链接
-func (connMgr *ConnManager) Get(connID uint32) (ziface.IConnection, error) {
+func (connMgr *ConnManager) Get(connID int64) (ziface.IConnection, error) {
 	connMgr.connLock.RLock()
 	defer connMgr.connLock.RUnlock()
 
@@ -80,7 +80,7 @@ func (connMgr *ConnManager) ClearConn() {
 }
 
 //ClearOneConn  利用ConnID获取一个链接 并且删除
-func (connMgr *ConnManager) ClearOneConn(connID uint32) {
+func (connMgr *ConnManager) ClearOneConn(connID int64) {
 	connMgr.connLock.Lock()
 	defer connMgr.connLock.Unlock()
 

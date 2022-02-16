@@ -26,7 +26,7 @@ type IConnection interface {
 	Context() context.Context //返回ctx，用于用户自定义的go程获取连接退出状态
 
 	GetTCPConnection() *websocket.Conn //从当前连接获取原始的socket TCPConn
-	GetConnID() uint32                 //获取当前连接ID
+	GetConnID() int64                  //获取当前连接ID
 	RemoteAddr() net.Addr              //获取远程客户端地址信息
 
 	SendMsg(msgID uint16, msgType int, data []byte) error     //直接将Message数据发送数据给远程的TCP客户端(无缓冲)

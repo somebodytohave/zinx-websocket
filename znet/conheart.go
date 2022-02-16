@@ -1,7 +1,6 @@
 package znet
 
 import (
-	"fmt"
 	"github.com/sun-fight/zinx-websocket/global"
 	"time"
 )
@@ -23,13 +22,17 @@ func (c *Connection) heartBeatChecker() {
 			if !c.IsAlive() {
 				c.Stop()
 				//心跳检测失败，结束连接
-				fmt.Println("连接已关闭 或者 太久没有心跳")
+				if c.isClosed {
+					global.Glog.Warn("连接已关闭")
+				} else {
+					global.Glog.Warn("心跳过期")
+				}
 				return
 			}
 			timer.Reset(global.Object.HeartbeatTime * time.Second)
 		case <-c.ctx.Done():
 			timer.Stop()
-			fmt.Println("连接已关闭")
+			global.Glog.Warn("连接关闭 by ctx.Done")
 			return
 		}
 	}

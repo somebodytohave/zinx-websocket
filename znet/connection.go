@@ -3,7 +3,7 @@ package znet
 import (
 	"context"
 	"errors"
-	"fmt"
+	"go.uber.org/zap"
 	"io"
 	"net"
 	"sync"
@@ -22,7 +22,7 @@ type Connection struct {
 	//当前连接的socket TCP套接字
 	Conn *websocket.Conn
 	//当前连接的ID 也可以称作为SessionID，ID全局唯一
-	ConnID uint32
+	ConnID int64
 	//消息管理MsgID和对应处理方法的消息管理模块
 	MsgHandler ziface.IMsgHandle
 	//告知该链接已经退出/停止的channel
@@ -45,7 +45,7 @@ type Connection struct {
 }
 
 //NewConnection 创建连接的方法
-func NewConnection(server ziface.IServer, conn *websocket.Conn, connID uint32, msgHandler ziface.IMsgHandle) *Connection {
+func NewConnection(server ziface.IServer, conn *websocket.Conn, connID int64, msgHandler ziface.IMsgHandle) *Connection {
 	//初始化Conn属性
 	c := &Connection{
 		TCPServer:   server,
@@ -65,29 +65,28 @@ func NewConnection(server ziface.IServer, conn *websocket.Conn, connID uint32, m
 
 //StartWriter 写消息Goroutine， 用户将数据发送给客户端
 func (c *Connection) StartWriter() {
-	fmt.Println("[Writer Goroutine is running]")
-	defer fmt.Println(c.RemoteAddr().String(), "[conn Writer exit!]")
+	//fmt.Println("[Writer Goroutine is running]")
+	defer global.Glog.Warn("[conn Writer exit!]" + c.RemoteAddr().String())
 
 	for {
 		select {
 		case msg := <-c.msgChan:
 			//有数据要写给客户端
 			if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
-				fmt.Println("Send Data error:, ", err, " Conn Writer exit")
+				global.Glog.Error("Send Data error:, ", zap.Error(err))
 				return
 			}
 			c.KeepAlive()
-			//fmt.Printf("Send data success! data = %+v\n", data)
 		case msg, ok := <-c.msgBuffChan:
 			if ok {
 				//有数据要写给客户端
 				if err := c.Conn.WriteMessage(msg.GetMsgType(), msg.GetData()); err != nil {
-					fmt.Println("Send Data error:, ", err, " Conn Writer exit")
+					global.Glog.Error("Send Data error:, ", zap.Error(err))
 					return
 				}
 				c.KeepAlive()
 			} else {
-				fmt.Println("msgBuffChan is Closed")
+				global.Glog.Warn("msgBuffChan is Closed")
 				break
 			}
 		case <-c.ctx.Done():
@@ -98,31 +97,32 @@ func (c *Connection) StartWriter() {
 
 //StartReader 读消息Goroutine，用于从客户端中读取数据
 func (c *Connection) StartReader() {
-	fmt.Println("[Reader Goroutine is running]")
-	defer fmt.Println(c.RemoteAddr().String(), "[conn Reader exit!]")
+	//fmt.Println("[Reader Goroutine is running]")
+	defer global.Glog.Warn("[conn Reader exit!]" + c.RemoteAddr().String())
 	defer c.Stop()
 
 	// 创建拆包解包的对象
 	for {
 		select {
 		case <-c.ctx.Done():
+			global.Glog.Warn("conn reader Done")
 			return
 		default:
 			msgType, ioReader, err := c.Conn.NextReader()
 			if err != nil {
-				fmt.Println("get read reader error ", err)
+				global.Glog.Error("get read reader error ", zap.Error(err))
 				return
 			}
 			//读取客户端的Msg head
 			headData := make([]byte, c.TCPServer.Packet().GetHeadLen())
 			if _, err := io.ReadFull(ioReader, headData); err != nil {
-				fmt.Println("read msg head error ", err)
+				global.Glog.Error("read msg head error ", zap.Error(err))
 				return
 			}
 			//拆包，得到msgID 和 dataLen 放在msg中
 			msg, err := c.TCPServer.Packet().Unpack(headData)
 			if err != nil {
-				fmt.Println("unpack error ", err)
+				global.Glog.Error("unpack error ", zap.Error(err))
 				return
 			}
 			msg.SetMsgType(msgType)
@@ -132,7 +132,7 @@ func (c *Connection) StartReader() {
 			if msg.GetDataLen() > 0 {
 				data = make([]byte, msg.GetDataLen())
 				if _, err := io.ReadFull(ioReader, data); err != nil {
-					fmt.Println("read msg data error ", err)
+					global.Glog.Error("read msg data error ", zap.Error(err))
 					return
 				}
 			}
@@ -183,12 +183,12 @@ func (c *Connection) Stop() {
 		return
 	}
 
-	fmt.Println("Conn Stop()...ConnID = ", c.ConnID)
+	global.Glog.Warn("Conn Stop()...", zap.Int64("ConnID =", c.ConnID))
 
 	// 关闭socket链接
 	err := c.Conn.Close()
 	if err != nil {
-		fmt.Println("关闭socket链接", err)
+		global.Glog.Error("关闭socket链接", zap.Error(err))
 	}
 	//关闭Writer
 	c.cancel()
@@ -209,7 +209,7 @@ func (c *Connection) GetTCPConnection() *websocket.Conn {
 }
 
 //GetConnID 获取当前连接ID
-func (c *Connection) GetConnID() uint32 {
+func (c *Connection) GetConnID() int64 {
 	return c.ConnID
 }
 
@@ -235,7 +235,7 @@ func (c *Connection) SendMsg(msgID uint16, msgType int, data []byte) (err error)
 	msg := NewMsgPackage(msgID, msgType, data)
 	pack, err := dp.Pack(msg)
 	if err != nil {
-		fmt.Println("Pack error msg ID = ", msgID)
+		global.Glog.Error("Pack error ", zap.Uint16("msg ID = ", msgID))
 		return errors.New("Pack error msg ")
 	}
 	msg.SetData(pack)
@@ -265,7 +265,7 @@ func (c *Connection) SendBuffMsg(msgID uint16, msgType int, data []byte) (err er
 	msg := NewMsgPackage(msgID, msgType, data)
 	pack, err := dp.Pack(msg)
 	if err != nil {
-		fmt.Println("Pack error msg ID = ", msgID)
+		global.Glog.Error("Pack error ", zap.Uint16("msg ID = ", msgID))
 		return errors.New("Pack error msg ")
 	}
 	msg.SetData(pack)
