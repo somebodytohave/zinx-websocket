@@ -100,8 +100,8 @@ type obj struct {
 	MysqlConfig mysqlConfig
 	//redis
 	RedisConfig redisConfig
-	// 额外的配置
-	ExtraConfig interface{}
+	// 额外的配置 .ExtraConfig["web-host"]
+	ExtraConfig map[string]interface{}
 }
 
 //PathExists 判断一个文件是否存在
