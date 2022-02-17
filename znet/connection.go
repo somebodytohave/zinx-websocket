@@ -66,7 +66,7 @@ func NewConnection(server ziface.IServer, conn *websocket.Conn, connID int64, ms
 //StartWriter 写消息Goroutine， 用户将数据发送给客户端
 func (c *Connection) StartWriter() {
 	//fmt.Println("[Writer Goroutine is running]")
-	defer global.Glog.Warn("[conn Writer exit!]" + c.RemoteAddr().String())
+	defer global.Glog.Warn("[conn Writer exit!]")
 
 	for {
 		select {
@@ -98,7 +98,7 @@ func (c *Connection) StartWriter() {
 //StartReader 读消息Goroutine，用于从客户端中读取数据
 func (c *Connection) StartReader() {
 	//fmt.Println("[Reader Goroutine is running]")
-	defer global.Glog.Warn("[conn Reader exit!]" + c.RemoteAddr().String())
+	defer global.Glog.Warn("[conn Reader exit!]")
 	defer c.Stop()
 
 	// 创建拆包解包的对象
