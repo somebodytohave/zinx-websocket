@@ -28,8 +28,7 @@ import (
 var Object *obj
 
 var Redis *redis.Client
-var MysqlRead *gorm.DB
-var MysqlWrite *gorm.DB
+var Mysql *gorm.DB
 
 type mysqlConfig struct {
 	Path         string //服务器地址:端口
@@ -97,12 +96,8 @@ type obj struct {
 	*/
 	ZapConfig zapConfig
 
-	/*
-		数据库
-	*/
-	MysqlReadConfig mysqlConfig
-	//可写操作数据库连接
-	MysqlWriteConfig mysqlConfig
+	//mysql
+	MysqlConfig mysqlConfig
 	//redis
 	RedisConfig redisConfig
 	// 额外的配置

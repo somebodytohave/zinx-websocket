@@ -6,16 +6,7 @@ WorkerPoolSize: 10
 LogDir: "./mylog"
 HeartbeatTime: 60
 
-MysqlReadConfig: 
-  Path: "127.0.0.1:3306"
-  Config: ""
-  Dbname: "test"
-  Username: "readuser"
-  Password: "123456"
-  MaxIdleConns: 10
-  MaxOpenConns: 100
-
-MysqlWriteConfig: 
+MysqlConfig:
   Path: "127.0.0.1:3306"
   Config: ""
   Dbname: "test"

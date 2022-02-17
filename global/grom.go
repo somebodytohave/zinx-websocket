@@ -11,17 +11,17 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-//if Object.MysqlRead != nil {
+//if Object.Mysql != nil {
 //	// 程序结束前关闭数据库链接
-//	db, _ := MysqlRead.DB()
+//	db, _ := Mysql.DB()
 //	defer db.Close()
 //}
 
 //- 用到mysql需要安装驱动`gorm.io/driver/mysql`
 
-//InitGormReadMysql 只读数据库连接
-func InitGormReadMysql() *gorm.DB {
-	m := Object.MysqlReadConfig
+//InitGormMysql 只读数据库连接
+func InitGormMysql() *gorm.DB {
+	m := Object.MysqlConfig
 	if m.Dbname == "" {
 		panic("sql name is empty")
 	}
@@ -43,36 +43,7 @@ func InitGormReadMysql() *gorm.DB {
 		sqlDB, _ := db.DB()
 		sqlDB.SetMaxIdleConns(m.MaxIdleConns)
 		sqlDB.SetMaxOpenConns(m.MaxOpenConns)
-		MysqlRead = db
-		return db
-	}
-}
-
-// InitGormWriteMysql 可读写数据库连接
-func InitGormWriteMysql() *gorm.DB {
-	m := Object.MysqlWriteConfig
-	if m.Dbname == "" {
-		panic("sql name is empty")
-	}
-	dsn := m.Username + ":" + m.Password + "@tcp(" + m.Path + ")/" + m.Dbname + "?" + m.Config
-	mysqlConfig := mysql.Config{
-		DSN:                       dsn,   // DSN data source name
-		DefaultStringSize:         191,   // string 类型字段的默认长度
-		DisableDatetimePrecision:  true,  // 禁用 datetime 精度，MySQL 5.6 之前的数据库不支持
-		DontSupportRenameIndex:    true,  // 重命名索引时采用删除并新建的方式，MySQL 5.7 之前的数据库和 MariaDB 不支持重命名索引
-		DontSupportRenameColumn:   true,  // 用 `change` 重命名列，MySQL 8 之前的数据库和 MariaDB 不支持重命名列
-		SkipInitializeWithVersion: false, // 根据版本自动配置
-	}
-	if db, err := gorm.Open(mysql.New(mysqlConfig), gormConfig()); err != nil {
-		Glog.Error("MySQL启动异常", zap.Error(err))
-		os.Exit(0)
-		//return nil
-		return nil
-	} else {
-		sqlDB, _ := db.DB()
-		sqlDB.SetMaxIdleConns(m.MaxIdleConns)
-		sqlDB.SetMaxOpenConns(m.MaxOpenConns)
-		MysqlWrite = db
+		Mysql = db
 		return db
 	}
 }
@@ -94,7 +65,7 @@ func gormConfig() *gorm.Config {
 	zapLogger := zzap.New(Glog.Named("sql"))
 	// optional: configure gorm to use this zapgorm.Logger for callbacks
 	//zapLogger.SetAsDefault()
-	switch Object.MysqlReadConfig.LogMode {
+	switch Object.MysqlConfig.LogMode {
 	case "silent", "Silent":
 		zapLogger.LogLevel = logger.Silent
 	case "error", "Error":

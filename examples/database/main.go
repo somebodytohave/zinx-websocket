@@ -10,11 +10,9 @@ import (
 func main() {
 	server := znet.NewServer()
 
-	global.InitGormReadMysql()
-	global.InitGormWriteMysql()
+	global.InitGormMysql()
 	global.InitRedis()
-	fmt.Println(global.MysqlRead)
-	fmt.Println(global.MysqlWrite)
+	fmt.Println(global.Mysql)
 	fmt.Println(global.Redis)
 
 	bindAddress := fmt.Sprintf("%s:%d", global.Object.Host, global.Object.TCPPort)
