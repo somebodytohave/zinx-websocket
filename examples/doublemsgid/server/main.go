@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sun-fight/zinx-websocket/examples/doublemsgid/server/api"
 	"github.com/sun-fight/zinx-websocket/global"
@@ -11,7 +12,7 @@ import (
 func main() {
 	server := znet.NewServer()
 	//比如 已有命令号 1001登录  1002退出登录
-	// 1 = 主命令 = 1001/DoubleMsgID. 配置表zinx.json DoubleMsgID:1000
+	// 1 = 主命令 = 1001/DoubleMsgID. 配置表zinx.yaml DoubleMsgID:1000
 	mainCmd := 1001 / global.Object.DoubleMsgID
 	//testRouter解析主命令包含所有 1xxx的子命令
 	server.AddRouter(mainCmd, &api.TestRouter{})

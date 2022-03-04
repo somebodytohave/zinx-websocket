@@ -48,20 +48,20 @@ type redisConfig struct {
 }
 
 type zapConfig struct {
-	Level         string `mapstructure:"level" json:"level" yaml:"level"`                           // 级别
-	Format        string `mapstructure:"format" json:"format" yaml:"format"`                        // 输出
-	Prefix        string `mapstructure:"prefix" json:"prefix" yaml:"prefix"`                        // 日志前缀
-	Director      string `mapstructure:"director" json:"director"  yaml:"director"`                 // 日志文件夹
-	LinkName      string `mapstructure:"link-name" json:"linkName" yaml:"link-name"`                // 软链接名称
-	ShowLine      bool   `mapstructure:"show-line" json:"showLine" yaml:"showLine"`                 // 显示行
-	EncodeLevel   string `mapstructure:"encode-level" json:"encodeLevel" yaml:"encode-level"`       // 编码级
-	StacktraceKey string `mapstructure:"stacktrace-key" json:"stacktraceKey" yaml:"stacktrace-key"` // 栈名
-	LogInConsole  bool   `mapstructure:"log-in-console" json:"logInConsole" yaml:"log-in-console"`  // 输出控制台
+	Level         string // 级别
+	Format        string // 输出
+	Prefix        string // 日志前缀
+	Director      string // 日志文件夹
+	LinkName      string // 软链接名称
+	ShowLine      bool   // 显示行
+	EncodeLevel   string // 编码级
+	StacktraceKey string // 栈名
+	LogInConsole  bool   // 输出控制台
 }
 
 /*
 	存储一切有关Zinx框架的全局参数，供其他模块使用
-	一些参数也可以通过 用户根据 zinx.json来配置
+	一些参数也可以通过 用户根据 zinx.yaml 来配置
 */
 type obj struct {
 	/*
@@ -118,7 +118,7 @@ func PathExists(path string) (bool, error) {
 
 //Reload 读取用户的配置文件
 func (g *obj) Reload() {
-	if confFileExists, _ := PathExists(g.ConfFilePath); confFileExists != true {
+	if confFileExists, _ := PathExists(g.ConfFilePath); !confFileExists {
 		fmt.Println("Config File " + g.ConfFilePath + " is not exist!!")
 		return
 	}
@@ -127,7 +127,7 @@ func (g *obj) Reload() {
 	v.SetConfigFile(g.ConfFilePath)
 	err := v.ReadInConfig()
 	if err != nil {
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+		panic(fmt.Errorf("fatal error config file: %s ", err))
 	}
 	v.WatchConfig()
 
@@ -138,7 +138,7 @@ func (g *obj) Reload() {
 		}
 	})
 	if err := v.Unmarshal(&g); err != nil {
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+		panic(fmt.Errorf("fatal error config file: %s ", err))
 	}
 
 }

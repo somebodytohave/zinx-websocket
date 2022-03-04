@@ -68,7 +68,6 @@ zinx的消息处理采用，`[MsgLength]|[MsgID]|[Data]`的封包格式
   "TcpPort": 8999,
   "MaxConn": 3,
   "WorkerPoolSize": 10,
-  "LogDir": "./mylog",
   "LogFile": "zinx.log",
   "HeartbeatTime": 60
 }

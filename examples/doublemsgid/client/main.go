@@ -3,13 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/sun-fight/zinx-websocket/znet"
 	"io"
 	"log"
 	"net/url"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/sun-fight/zinx-websocket/znet"
 
 	"github.com/gorilla/websocket"
 )

@@ -4,5 +4,14 @@ TcpPort: 8999
 DoubleMsgID: 1000
 MaxConn: 3
 WorkerPoolSize: 10
-LogDir: "./mylog"
 HeartbeatTime: 60
+ZapConfig:
+  Level: "error"
+  Format: "console"
+  Prefix: "[zinx-websocket]"
+  Director: "log"
+  LinkName: "latest_log"
+  ShowLine: true
+  EncodeLevel: "LowercaseColorLevelEncoder"
+  StacktraceKey: "stacktrace"
+  LogInConsole: true

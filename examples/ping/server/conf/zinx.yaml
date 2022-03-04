@@ -3,15 +3,14 @@ Host: "127.0.0.1"
 TcpPort: 8999
 MaxConn: 3
 WorkerPoolSize: 10
-LogDir: "./mylog"
 HeartbeatTime: 60
 ZapConfig:
-  level: "error"
-  format: "console"
-  prefix: "[zinx-websocket]"
-  director: "log"
-  linkName: "latest_log"
-  showLine: true
-  encodeLevel: "LowercaseColorLevelEncoder"
-  stacktraceKey: "stacktrace"
-  logInConsole: true
+  Level: "error"
+  Format: "console"
+  Prefix: "[zinx-websocket]"
+  Director: "log"
+  LinkName: "latest_log"
+  ShowLine: true
+  EncodeLevel: "LowercaseColorLevelEncoder"
+  StacktraceKey: "stacktrace"
+  LogInConsole: true
