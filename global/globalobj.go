@@ -52,7 +52,6 @@ type zapConfig struct {
 	Format        string // 输出
 	Prefix        string // 日志前缀
 	Director      string // 日志文件夹
-	LinkName      string // 软链接名称
 	ShowLine      bool   // 显示行
 	EncodeLevel   string // 编码级
 	StacktraceKey string // 栈名
@@ -169,7 +168,6 @@ func InitObject() {
 			Format:        "console",
 			Prefix:        "[zinx-websocket]",
 			Director:      "log",
-			LinkName:      "latest_log",
 			ShowLine:      true,
 			EncodeLevel:   "LowercaseColorLevelEncoder",
 			StacktraceKey: "stacktrace",
